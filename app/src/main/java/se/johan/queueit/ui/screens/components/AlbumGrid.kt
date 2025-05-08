@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -49,7 +50,8 @@ fun AlbumGrid(navController: NavController, albumsViewModel: AlbumsViewModel = h
                         artWork = getAlbumArtWork(context, it.albumEntity.albumUri ?: ""),
                         modifier = Modifier.clickable {
                             navController.navigate(AlbumScreenIdentifier(it.albumEntity.albumId))
-                        }
+                        },
+                        itemSize = albumsViewModel.getItemSize(LocalConfiguration.current.screenWidthDp)
                     )
                 }
             }

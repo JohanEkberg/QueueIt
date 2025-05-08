@@ -1,6 +1,5 @@
 package se.johan.queueit.ui.screens
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
@@ -23,11 +22,8 @@ fun HomeScreen(navController: NavController) {
     val pagerState = rememberPagerState(pageCount = { 3 })
     val tabTitles = listOf("Albums", "Artist", "Queue")
 
-    Scaffold { contentPadding ->
-        Column(
-            modifier = Modifier
-            .padding(contentPadding)
-        ) {
+    Scaffold (
+        topBar = {
             TabRow(selectedTabIndex = pagerState.currentPage) {
                 tabTitles.forEachIndexed { index, title ->
                     Tab(
@@ -41,10 +37,30 @@ fun HomeScreen(navController: NavController) {
                     )
                 }
             }
+        }
+    ) { contentPadding ->
+//        Column(
+//            modifier = Modifier
+//                .padding(contentPadding)
+//                .background(MaterialTheme.colorScheme.background)
+//        ) {
+//            TabRow(selectedTabIndex = pagerState.currentPage) {
+//                tabTitles.forEachIndexed { index, title ->
+//                    Tab(
+//                        selected = pagerState.currentPage == index,
+//                        onClick = {
+//                            coroutineScope.launch {
+//                                pagerState.animateScrollToPage(index)
+//                            }
+//                        },
+//                        text = { Text(title) }
+//                    )
+//                }
+//            }
 
             HorizontalPager(
                 state = pagerState,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.padding(contentPadding)
             ) { page ->
                 when (page) {
                     0 -> {
@@ -57,7 +73,7 @@ fun HomeScreen(navController: NavController) {
                 }
             }
         }
-    }
+    //}
 }
 
 //@Preview(showBackground = true)

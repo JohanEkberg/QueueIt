@@ -1,16 +1,17 @@
 package se.johan.queueit.ui.screens.components
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -20,8 +21,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import se.johan.queueit.R
+import se.johan.queueit.ui.theme.QueueItTheme
 
 @Composable
 fun AlbumCard(
@@ -29,60 +36,78 @@ fun AlbumCard(
     albumGroup: String,
     nbrOfSongs: String,
     artWork: Bitmap,
-    modifier: Modifier
+    modifier: Modifier,
+    itemSize: Dp
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(0.dp)
+            .padding(vertical = 2.dp)
             .then(modifier) // Concatenate provided modifier with the new instance
             //.background(color = Color(0xFFBDBDBD)) // Equivalent to @color/gray_300
     ) {
-        // Optional Card wrapper (you had it commented out)
-        Card(
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            Image(
+                painter = remember(artWork) { BitmapPainter(artWork.asImageBitmap()) },
+                contentDescription = "Album cover",
+                modifier = Modifier
+                    .size(itemSize)
+                    .clip(RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp))
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .padding(0.dp)
+                .width(itemSize)
+                .clip(RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp))
+                .background(Color.Black),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                text = albumTitle,
+                fontSize = 16.sp,
+                color = Color.White,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Text(
+                text = albumGroup,
+                fontSize = 14.sp,
+                color = Color.White,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Text(
+                text = nbrOfSongs,
+                fontSize = 14.sp,
+                color = Color.White,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AlbumGridPreview() {
+    QueueItTheme {
+        val context = LocalContext.current
+        AlbumCard(
+            "Final countdown",
+            "Europe",
+            "12",
+            BitmapFactory.decodeResource(context.resources, R.drawable.default_music2),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(4.dp),
-            elevation = CardDefaults.cardElevation(10.dp),
-            shape = RoundedCornerShape(10.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.Black)
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(0.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Image(
-                        painter = remember(artWork) { BitmapPainter(artWork.asImageBitmap()) },
-                        contentDescription = "Album cover",
-                        modifier = Modifier
-                            .size(120.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                    )
-                }
-
-                Text(
-                    text = albumTitle.take(20),
-                    fontSize = 16.sp,
-                    color = Color.White
-                )
-
-                Text(
-                    text = albumGroup,
-                    fontSize = 14.sp,
-                    color = Color.White
-                )
-
-                Text(
-                    text = nbrOfSongs, // e.g. "12 songs"
-                    fontSize = 14.sp,
-                    color = Color.White
-                )
-            }
-        }
+                .padding(0.dp),
+            130.dp
+        )
     }
 }

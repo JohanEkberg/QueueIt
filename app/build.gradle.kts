@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.lottie.compose)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
+    implementation(libs.androidx.palette.ktx)
     ksp(libs.room.compiler)
     annotationProcessor(libs.room.compiler)
     implementation(libs.room.paging)

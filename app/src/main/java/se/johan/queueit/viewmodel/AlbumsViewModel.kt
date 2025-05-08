@@ -1,6 +1,8 @@
 package se.johan.queueit.viewmodel
 
+import android.graphics.Bitmap
 import android.util.Log
+import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -14,6 +16,7 @@ import kotlinx.coroutines.withContext
 import se.johan.queueit.TAG
 import se.johan.queueit.model.database.AlbumWithSongs
 import se.johan.queueit.model.usecases.AudioDataUseCases
+import se.johan.queueit.util.getSizeBasedOnScreenSize
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,4 +42,12 @@ class AlbumsViewModel @Inject constructor (
             }
         }
     }
+
+    fun getDominantColor(bitmap: Bitmap) {
+        se.johan.queueit.util.getDominantColor(bitmap) { color ->
+            // TODO: ADD DOMINANT COLOR TO TEXT BACKGROUND
+        }
+    }
+
+    fun getItemSize(screenWidthDp: Int): Dp = getSizeBasedOnScreenSize(screenWidthDp)
 }
