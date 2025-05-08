@@ -1,0 +1,56 @@
+package se.johan.queueit.ui.screens
+
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModelStoreOwner
+import androidx.navigation.NavController
+import se.johan.queueit.mediastore.util.getAlbumArtWork
+import se.johan.queueit.ui.screens.components.AlbumHeader
+import se.johan.queueit.ui.screens.components.AlbumTracks
+import se.johan.queueit.viewmodel.AlbumViewModel
+import se.johan.queueit.viewmodel.BottomSheetViewModel
+
+@Composable
+fun AlbumScreen(
+    navController: NavController,
+    albumViewModel: AlbumViewModel = hiltViewModel(),
+    bottomSheetViewModel: BottomSheetViewModel = hiltViewModel(LocalContext.current as ViewModelStoreOwner)
+) {
+    val context = LocalContext.current
+
+    val album = albumViewModel.album.value
+    val albumUri = album.albumEntity.albumUri
+
+    val albumArtWork = remember(albumUri) {
+        getAlbumArtWork(context, albumUri ?: "")
+    }
+
+    val swipeThreshold = 100f
+    var offsetX by remember { mutableStateOf(0f) }
+
+    Column (
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                detectHorizontalDragGestures { _, dragAmount ->
+                    offsetX += dragAmount
+                    if (offsetX < -swipeThreshold) {
+                        navController.popBackStack()
+                    }
+                }
+            }
+    ) {
+        AlbumHeader(album, albumArtWork)
+        AlbumTracks(albumArtWork, album.songList, albumViewModel.addTrackToQueue, bottomSheetViewModel)
+    }
+}

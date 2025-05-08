@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">QueueIt</string>
+
+    <!-- Splash screen text -->
+    <string name="splash_animation_tag">SPLASH_ANIMATION</string>
+
+    <!-- Snackbar texts -->
+    <string name="permissions_not_granted">Permissions not granted</string>
+
+    <!-- Toolbar menu -->
+    <string name="menu_settings">Settings</string>
+
+    <!-- Settings screen texts -->
+    <string name="settings_start_scan">Start scan</string>
+
+    <!-- Player -->
+    <string name="player_play">Play song</string>
+    <string name="player_pause">Pause song</string>
+</resources>
