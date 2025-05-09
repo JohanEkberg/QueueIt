@@ -11,12 +11,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 import se.johan.queueit.ui.screens.components.AlbumGrid
+import se.johan.queueit.viewmodel.BottomSheetViewModel
+import se.johan.queueit.viewmodel.dynamicBottomPadding
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(
+    navController: NavController,
+    bottomSheetViewModel: BottomSheetViewModel = hiltViewModel(LocalContext.current as ViewModelStoreOwner)
+) {
     val coroutineScope = rememberCoroutineScope()
 
     val pagerState = rememberPagerState(pageCount = { 3 })
@@ -39,41 +47,23 @@ fun HomeScreen(navController: NavController) {
             }
         }
     ) { contentPadding ->
-//        Column(
-//            modifier = Modifier
-//                .padding(contentPadding)
-//                .background(MaterialTheme.colorScheme.background)
-//        ) {
-//            TabRow(selectedTabIndex = pagerState.currentPage) {
-//                tabTitles.forEachIndexed { index, title ->
-//                    Tab(
-//                        selected = pagerState.currentPage == index,
-//                        onClick = {
-//                            coroutineScope.launch {
-//                                pagerState.animateScrollToPage(index)
-//                            }
-//                        },
-//                        text = { Text(title) }
-//                    )
-//                }
-//            }
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.padding(
+                top = contentPadding.calculateTopPadding(),
+                bottom = bottomSheetViewModel.dynamicBottomPadding())
+        ) { page ->
+            when (page) {
+                0 -> {
+                    AlbumGrid(navController)
+                }
 
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier.padding(contentPadding)
-            ) { page ->
-                when (page) {
-                    0 -> {
-                        AlbumGrid(navController)
-                    }
-
-                    else -> {
-                        Text("Test page: $page", Modifier.fillMaxSize())
-                    }
+                else -> {
+                    Text("Test page: $page", Modifier.fillMaxSize())
                 }
             }
         }
-    //}
+    }
 }
 
 //@Preview(showBackground = true)

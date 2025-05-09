@@ -39,7 +39,7 @@ fun AlbumGrid(navController: NavController, albumsViewModel: AlbumsViewModel = h
     ) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
-            contentPadding = PaddingValues(bottom = 80.dp)
+            contentPadding = PaddingValues(bottom = 0.dp)
         ) {
             items(albums.itemCount) { index ->
                 albums[index]?.let {

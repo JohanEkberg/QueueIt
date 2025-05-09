@@ -77,9 +77,7 @@ class MainActivity : ComponentActivity() {
                         sheetContent = {
                             AnimatedVisibility(visible = sheetContent != null) {
                                 sheetContent?.invoke()
-                                //Player()
                             }
-                            //Player()
                         }
                     ) {
                         QueueItNavGraph(navController, innerPadding)

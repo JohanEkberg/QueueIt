@@ -6,6 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import se.johan.queueit.TAG
@@ -22,6 +24,16 @@ class BottomSheetViewModel @Inject constructor(
     var isPlaying by mutableStateOf(false)
         private set
 
+    var isVisible: Boolean = false
+        private set
+
+    var playerHeight: Dp = 0.dp
+        private set
+
+    fun updatePlayerHeight(height: Dp) {
+        playerHeight = height
+    }
+
     fun togglePlayPause(context: Context) {
         if (isPlaying) {
             onPause()
@@ -33,10 +45,12 @@ class BottomSheetViewModel @Inject constructor(
 
     fun show(content: @Composable () -> Unit) {
         this.content = content
+        isVisible = true
     }
 
     fun hide() {
         this.content = null
+        isVisible = false
     }
 
     fun onPlay(context: Context) {
@@ -56,7 +70,7 @@ class BottomSheetViewModel @Inject constructor(
         }
     }
 
-    fun onPause() {
+    private fun onPause() {
         try {
             musicPlayer.pause()
         } catch(e: Exception) {
@@ -71,4 +85,10 @@ class BottomSheetViewModel @Inject constructor(
             Log.e(TAG, "Skip failed, exception ${e.message}")
         }
     }
+}
+
+fun BottomSheetViewModel.dynamicBottomPadding() = if (isVisible) {
+    if(playerHeight > 0.dp) {playerHeight} else {64.dp}
+} else {
+    0.dp
 }

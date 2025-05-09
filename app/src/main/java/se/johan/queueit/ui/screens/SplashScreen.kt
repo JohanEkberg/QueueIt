@@ -1,17 +1,22 @@
 package se.johan.queueit.ui.screens
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -34,6 +39,7 @@ fun SplashScreen(
     splashViewModel: SplashViewModel = hiltViewModel()
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
+    var errorMessage by remember { mutableStateOf("") }
     val context = LocalContext.current
     val appContext = context.applicationContext
     Scaffold (
@@ -58,24 +64,40 @@ fun SplashScreen(
         }
 
         val permissionNotGranted = stringResource(R.string.permissions_not_granted)
+        val error = stringResource(R.string.splash_error_message)
         LaunchedEffect(isPermissionGranted, successfulStartup) {
             if (isPermissionGranted && successfulStartup == true) {
                 navController.navigate(HomeScreenIdentifier)
             } else if (isPermissionGranted && successfulStartup == false) {
-                // TODO: Show error message, couldn't start the app
+                errorMessage = error
             } else if (!isPermissionGranted && successfulStartup != null) {
                 snackbarHostState.showSnackbar(permissionNotGranted)
             }
         }
 
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(contentPadding),
-            contentAlignment = Alignment.Center
+                .padding(16.dp)
         ) {
-            StartLottieAnimation()
-       }
+            if (errorMessage.isNotEmpty()) {
+                Text(
+                    text = errorMessage,
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(contentPadding),
+                contentAlignment = Alignment.Center
+            ) {
+                StartLottieAnimation()
+            }
+        }
+
    }
 }
 

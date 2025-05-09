@@ -1,5 +1,6 @@
 package se.johan.queueit.ui.screens
 
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,8 +16,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -36,12 +42,27 @@ fun SettingsScreen(
         val successfulScan = settingsViewModel.successfulScan.collectAsState().value
         val pendingScan = settingsViewModel.pendingScan.collectAsState().value
 
+        if (successfulScan) {
+            navController.navigate(HomeScreenIdentifier)
+        }
+
+        val swipeThreshold = 100f
+        var offsetX by remember { mutableStateOf(0f) }
+
         Column(modifier = Modifier
             .padding(contentPadding)
             .padding(horizontal = 20.dp)
-            .fillMaxSize(),
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                detectHorizontalDragGestures { _, dragAmount ->
+                    offsetX += dragAmount
+                    if (offsetX < -swipeThreshold) {
+                        navController.popBackStack()
+                    }
+                }
+            },
             verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Button(
                 onClick = {settingsViewModel.doScan(appContext)},

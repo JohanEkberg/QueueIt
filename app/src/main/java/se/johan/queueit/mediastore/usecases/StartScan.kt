@@ -24,6 +24,7 @@ class StartScan@Inject constructor (
         newArtistDetectedCallback: ((artist: String) -> Unit)? = null
     ) : Boolean {
         return try {
+            var success = true
             val collection =
                 MediaStore.Audio.Media.getContentUri(
                     MediaStore.VOLUME_EXTERNAL
@@ -59,9 +60,10 @@ class StartScan@Inject constructor (
                         artistNotificationCallback = newArtistDetectedCallback
                     )) {
                     Log.e(TAG, "Scan media store failed")
+                    success = false
                 }
             }
-            true
+            success
         } catch(e: Exception) {
             Log.e(TAG, "Scan media files failed, exception: ${e.message}, stacktrace: ${Log.getStackTraceString(e)}")
             false
