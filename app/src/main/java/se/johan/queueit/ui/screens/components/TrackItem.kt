@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,8 +30,7 @@ fun TrackItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .background(color = Color(0xFFEEEEEE)) // gray_200
-            .padding(4.dp),
+            .background(MaterialTheme.colorScheme.surface),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(
@@ -50,7 +50,7 @@ fun TrackItem(
             Text(
                 text = albumGroup,
                 fontSize = 14.sp,
-                color = Color(0xFF212121), // gray_900
+                color = Color.White, // gray_900
                 maxLines = 1,
                 modifier = Modifier
                     .padding(start = 25.dp)
@@ -59,7 +59,7 @@ fun TrackItem(
             Text(
                 text = playTime,
                 fontSize = 14.sp,
-                color = Color(0xFF212121), // gray_900
+                color = Color.White, // gray_900
                 modifier = Modifier.padding(start = 25.dp)
             )
         }

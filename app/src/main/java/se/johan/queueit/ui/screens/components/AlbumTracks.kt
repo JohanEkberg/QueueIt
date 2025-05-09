@@ -1,12 +1,14 @@
 package se.johan.queueit.ui.screens.components
 
 import android.graphics.Bitmap
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -23,8 +25,7 @@ fun AlbumTracks(
 
     LazyColumn(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(4.dp),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.Top,
         contentPadding = PaddingValues(bottom = 80.dp)
     ) {
@@ -33,7 +34,8 @@ fun AlbumTracks(
                 songTitle = it.songEntity.songName ?: "[Unknown title]",
                 albumGroup = it.artist?.artistName ?: "[Unknown artist]",
                 playTime = getFormattedDurationTime(it.songEntity.duration ?: ""),
-                modifier = Modifier.clickable {
+                modifier = Modifier
+                    .clickable {
                     onTrackClick(it)
 
                     // Show player

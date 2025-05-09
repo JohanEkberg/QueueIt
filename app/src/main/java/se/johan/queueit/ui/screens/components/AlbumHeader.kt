@@ -17,8 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import se.johan.queueit.R
 import se.johan.queueit.model.database.AlbumWithSongs
 
 @Composable
@@ -60,7 +62,8 @@ fun AlbumHeader(albumWithSongs: AlbumWithSongs?, albumArtWork: Bitmap) {
                     color = Color.White
                 )
                 Text(
-                    text = albumWithSongs?.songList?.size.toString(),
+                    text = "${stringResource(R.string.album_grid_card_number_of_songs)} " +
+                            albumWithSongs?.songList?.size.toString(),
                     fontSize = 14.sp,
                     color = Color.White
                 )

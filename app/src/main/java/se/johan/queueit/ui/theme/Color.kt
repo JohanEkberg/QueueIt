@@ -26,15 +26,16 @@ val Gray100 = Color(0xFFF7F7F7)
 val Gray75 = Color(0xFFF9F9F9)
 
 
+val blue50 = Color(0xFFBBDEFB)
+val blue75 = Color(0xFFC6D5DF)
+val blue80 = Color(0xFFAFC6D9)
+val blue100 = Color(0xFF4185AE)
+val blue200 = Color(0xFF0077B6)
+val blue250 = Color(0xFF1274B0)
+val blue300 = Color(0xFF1F5A7F)
+val blue350 = Color(0xFF144059)
 
-//<color name="gray50">#F8F9FA</color>
-//<color name="gray25">#F5F5F5</color>
-//<color name="appGray">#F9F9F9</color>
-//
-//<color name="blue50">#BBDEFB</color>
-//<color name="blue75">#C6D5DF</color>
-//<color name="blue80">#AFC6D9</color>
-//<color name="blue100">#4185AE</color>
+
 //<color name="blue200">#0077B6</color>
 //<color name="blue250">#1274B0</color>
 //<color name="blue300">#1F5A7F</color>

@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import se.johan.queueit.R
@@ -28,7 +29,7 @@ fun TopToolbar(
     var showMenu by remember { mutableStateOf(false) }
 
     TopAppBar(
-        title = { Text(stringResource(R.string.app_name)) },
+        title = { Text(stringResource(R.string.app_name), color = Color.White) },
         actions = {
             IconButton(onClick = { }) {
                 Icon(Icons.Default.Search, contentDescription = "Search")

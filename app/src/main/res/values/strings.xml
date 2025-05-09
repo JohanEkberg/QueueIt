@@ -5,7 +5,6 @@
     <string name="splash_animation_tag">SPLASH_ANIMATION</string>
     <string name="splash_error_message">Startup failed. Please try again.</string>
 
-
     <!-- Snackbar texts -->
     <string name="permissions_not_granted">Permissions not granted</string>
 
@@ -18,4 +17,7 @@
     <!-- Player -->
     <string name="player_play">Play song</string>
     <string name="player_pause">Pause song</string>
+
+    <!-- Album grid -->
+    <string name="album_grid_card_number_of_songs">Songs:</string>
 </resources>
