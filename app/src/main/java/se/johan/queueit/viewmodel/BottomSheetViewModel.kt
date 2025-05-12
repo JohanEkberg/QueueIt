@@ -1,6 +1,8 @@
 package se.johan.queueit.viewmodel
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -12,13 +14,20 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import se.johan.queueit.TAG
 import se.johan.queueit.audio.player.MusicPlayerUseCases
+import se.johan.queueit.audio.queue.SongQueueUseCases
+import se.johan.queueit.mediastore.util.getAlbumArtWork
+import se.johan.queueit.ui.screens.components.Player
 import javax.inject.Inject
 
 @HiltViewModel
 class BottomSheetViewModel @Inject constructor(
-    private val musicPlayer: MusicPlayerUseCases
+    private val musicPlayer: MusicPlayerUseCases,
+    private val songQueue: SongQueueUseCases
 ) : ViewModel() {
     var content by mutableStateOf<(@Composable () -> Unit)?>(null)
+        private set
+
+    var currentSong by mutableStateOf<SongData?>(null)
         private set
 
     var isPlaying by mutableStateOf(false)
@@ -29,6 +38,21 @@ class BottomSheetViewModel @Inject constructor(
 
     var playerHeight: Dp = 0.dp
         private set
+
+    private fun setCurrentSong(context: Context) {
+        val currentTrack = songQueue.getQueueItem()
+        currentTrack?.let { song ->
+            val artwork = getAlbumArtWork(context, song.albumUri)
+            currentSong = SongData(
+                artwork = artwork,
+                artist = song.artist,
+                title = song.title
+            )
+        } ?: run {
+            onStop()
+            hide()
+        }
+    }
 
     fun updatePlayerHeight(height: Dp) {
         playerHeight = height
@@ -43,13 +67,15 @@ class BottomSheetViewModel @Inject constructor(
         isPlaying = !isPlaying
     }
 
-    fun show(content: @Composable () -> Unit) {
+    fun show(context: Context, content: @Composable () -> Unit) {
+        setCurrentSong(context)
         this.content = content
         isVisible = true
     }
 
     fun hide() {
         this.content = null
+        this.currentSong = null
         isVisible = false
     }
 
@@ -81,6 +107,7 @@ class BottomSheetViewModel @Inject constructor(
     fun onSkip(context: Context) {
         try {
             musicPlayer.skip(context)
+            setCurrentSong(context)
         } catch(e: Exception) {
             Log.e(TAG, "Skip failed, exception ${e.message}")
         }
@@ -92,3 +119,9 @@ fun BottomSheetViewModel.dynamicBottomPadding() = if (isVisible) {
 } else {
     0.dp
 }
+
+data class SongData(
+    val artwork: Bitmap,
+    val artist: String,
+    val title: String
+)

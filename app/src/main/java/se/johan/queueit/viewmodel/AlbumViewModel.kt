@@ -56,7 +56,7 @@ class AlbumViewModel @Inject constructor (
         songQueue.addQueueItem(
             AudioFileMetaData(
                 songUri = Uri.parse(song.songEntity.songUri),
-                album = "",
+                album = "", // TODO: Is this needed?
                 title = song.songEntity.songName ?: "",
                 artist = song.artist?.artistName ?: "",
                 genre = "",
@@ -70,5 +70,4 @@ class AlbumViewModel @Inject constructor (
             )
         )
     }
-
 }

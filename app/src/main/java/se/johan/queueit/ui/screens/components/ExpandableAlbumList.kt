@@ -39,12 +39,20 @@ import se.johan.queueit.mediastore.util.getAlbumArtWork
 import se.johan.queueit.mediastore.util.getDefaultArtWork
 import se.johan.queueit.mediastore.util.getFormattedDurationTime
 import se.johan.queueit.model.database.AlbumEntity
+import se.johan.queueit.model.database.ArtistEntity
+import se.johan.queueit.model.database.SongWithArtist
 import se.johan.queueit.util.adjustForWhiteText
 import se.johan.queueit.util.getDominantColor
 import se.johan.queueit.viewmodel.AlbumUiModel
+import se.johan.queueit.viewmodel.BottomSheetViewModel
+import se.johan.queueit.viewmodel.SongData
 
 @Composable
-fun ExpandableAlbumList(albumsFromArtist: List<AlbumUiModel>) {
+fun ExpandableAlbumList(
+    albumsFromArtist: List<AlbumUiModel>,
+    onTrackClick: (SongWithArtist) -> Unit,
+    bottomSheetViewModel: BottomSheetViewModel
+) {
     val context = LocalContext.current
 
     // Holds the background color for each album
@@ -90,7 +98,6 @@ fun ExpandableAlbumList(albumsFromArtist: List<AlbumUiModel>) {
                 ) {
                     Image(
                         painter = remember(artWork) { BitmapPainter(artWork.asImageBitmap()) },
-                        //painter = painterResource(R.drawable.default_music2),
                         contentDescription = null,
                         modifier = Modifier.size(60.dp)
                     )
@@ -119,21 +126,21 @@ fun ExpandableAlbumList(albumsFromArtist: List<AlbumUiModel>) {
                     albumUiModel.songs.forEach { song ->
                         TrackItem(
                             songTitle = song.songName ?: "[Unknown title]",
-                            albumGroup = albumUiModel.artist ?: "[Unknown artist]",
+                            albumGroup = albumUiModel.artist.artistName ?: "[Unknown artist]",
                             playTime = getFormattedDurationTime(song.duration ?: ""),
                             modifier = Modifier
                                 .background(MaterialTheme.colorScheme.primary)
                                 .clickable {
-                                    //onTrackClick(it)
+                                    onTrackClick(SongWithArtist(
+                                        songEntity = song,
+                                        artist = albumUiModel.artist))
 
-//                                    // Show player
-//                                    bottomSheetViewModel.show {
-//                                        Player(
-//                                            albumArtWork,
-//                                            it.artist?.artistName ?: "[Unknown artist]",
-//                                            it.songEntity.songName ?: "[Unknown title]"
-//                                        )
-//                                    }
+                                    // Show player
+                                    if (!bottomSheetViewModel.isVisible) {
+                                        bottomSheetViewModel.show(context = context) {
+                                            Player()
+                                        }
+                                    }
                                 }
                             )
                     }

@@ -173,13 +173,13 @@ class MusicPlayerRepository @Inject constructor(
                 // Remove one item from the queue,
                 // if the queue is empty report empty queue.
                 _initDone = false
-                _currentSong = songQueueUseCases.getQueueItem()
-                if (_currentSong == null && songQueueUseCases.queueSize() == 0) {
-                    Log.w(TAG, "Queue is empty!")
-                    _songChangeCallback?.let { it(null) }
-                } else {
-                    _songChangeCallback?.let { it(_currentSong) }
-                }
+//                _currentSong = songQueueUseCases.getQueueItem()
+//                if (_currentSong == null && songQueueUseCases.queueSize() == 0) {
+//                    Log.w(TAG, "Queue is empty!")
+//                    _songChangeCallback?.let { it(null) }
+//                } else {
+//                    _songChangeCallback?.let { it(_currentSong) }
+//                }
             }
         } catch (e: Exception) {
             e.printStackTrace()

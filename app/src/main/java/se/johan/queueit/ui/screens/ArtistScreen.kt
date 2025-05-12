@@ -45,7 +45,11 @@ fun ArtistScreen(
                 }
             }
     ) {
-        ExpandableAlbumList(albumsFromArtist)
+        ExpandableAlbumList(
+            albumsFromArtist =  albumsFromArtist,
+            artistViewModel.addTrackToQueue,
+            bottomSheetViewModel = bottomSheetViewModel
+        )
     }
 
 }

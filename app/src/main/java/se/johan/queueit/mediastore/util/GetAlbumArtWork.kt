@@ -23,4 +23,17 @@ fun getAlbumArtWork(context: Context, artWork: String) : Bitmap {
     }
 }
 
+fun getAlbumArtWork(context: Context, artWork: Uri?) : Bitmap {
+    return try {
+        if (artWork != null) {
+            context.contentResolver.loadThumbnail(artWork, Size(640, 480), null)
+        } else {
+            BitmapFactory.decodeResource(context.resources, R.drawable.default_music2)
+        }
+    } catch(e: Exception) {
+        Log.e(TAG, "Failed to get album artwork, exception: ${e.message}")
+        BitmapFactory.decodeResource(context.resources, R.drawable.default_music2)
+    }
+}
+
 fun getDefaultArtWork(context: Context) = BitmapFactory.decodeResource(context.resources, R.drawable.default_music2)

@@ -11,18 +11,21 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import se.johan.queueit.mediastore.util.getFormattedDurationTime
 import se.johan.queueit.model.database.SongWithArtist
 import se.johan.queueit.viewmodel.BottomSheetViewModel
+import se.johan.queueit.viewmodel.SongData
 
 @Composable
 fun AlbumTracks(
     albumArtWork: Bitmap,
     tracks: List<SongWithArtist>,
     onTrackClick: (SongWithArtist) -> Unit,
-    bottomSheetViewModel: BottomSheetViewModel) {
-
+    bottomSheetViewModel: BottomSheetViewModel
+) {
+    val context = LocalContext.current
     LazyColumn(
         modifier = Modifier
             .fillMaxSize(),
@@ -40,12 +43,10 @@ fun AlbumTracks(
                     onTrackClick(it)
 
                     // Show player
-                    bottomSheetViewModel.show {
-                        Player(
-                            albumArtWork,
-                            it.artist?.artistName ?: "[Unknown artist]",
-                            it.songEntity.songName ?: "[Unknown title]"
-                        )
+                    if (!bottomSheetViewModel.isVisible) {
+                        bottomSheetViewModel.show(context = context) {
+                            Player()
+                        }
                     }
                 }
             ) }

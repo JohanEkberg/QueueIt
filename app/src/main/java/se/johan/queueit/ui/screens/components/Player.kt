@@ -38,112 +38,115 @@ import se.johan.queueit.viewmodel.BottomSheetViewModel
 
 @Composable
 fun Player(
-    artWork: Bitmap,
-    artist: String,
-    song: String,
+//    artWork: Bitmap,
+//    artist: String,
+//    song: String,
     bottomSheetViewModel: BottomSheetViewModel = hiltViewModel(LocalContext.current as ViewModelStoreOwner)
 ) {
     val context = LocalContext.current
     val isPlaying = bottomSheetViewModel.isPlaying
+    val currentSong = bottomSheetViewModel.currentSong
 
     // Dynamically get player height for the bottom sheet to adopt to
     val density = LocalDensity.current
 
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth(),
-        color = MaterialTheme.colorScheme.surface
-    ) {
-        Row(
+    currentSong?.let { song ->
+        Surface(
             modifier = Modifier
-                .padding(10.dp)
-                .fillMaxWidth()
-                .onGloballyPositioned { coordinates ->
-                    val heightPx = coordinates.size.height
-                    val heightDp = with(density) { heightPx.toDp() }
-                    bottomSheetViewModel.updatePlayerHeight(heightDp)
-                },
-            verticalAlignment = Alignment.Top,
-            horizontalArrangement = Arrangement.SpaceBetween
+                .fillMaxWidth(),
+            color = MaterialTheme.colorScheme.surface
         ) {
-            // Album Image
-            Image(
-                painter = remember(artWork) { BitmapPainter(artWork.asImageBitmap()) } ,
-                contentDescription = "Album Art",
-                modifier = Modifier.size(50.dp)
-            )
-
-            Column(
+            Row(
                 modifier = Modifier
-                    .padding(start = 10.dp)
-                    .weight(1f),
-                verticalArrangement = Arrangement.Top
+                    .padding(10.dp)
+                    .fillMaxWidth()
+                    .onGloballyPositioned { coordinates ->
+                        val heightPx = coordinates.size.height
+                        val heightDp = with(density) { heightPx.toDp() }
+                        bottomSheetViewModel.updatePlayerHeight(heightDp)
+                    },
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = artist,
-                    fontSize = 20.sp,
-                    color = Color.White,
-                    modifier = Modifier.padding(top = 5.dp),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Text(
-                    text = song,
-                    fontSize = 20.sp,
-                    color = Color.White,
-                    modifier = Modifier.padding(bottom = 10.dp),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-
-            // Lyrics Button
-            IconButton(
-                onClick = {bottomSheetViewModel.onPlay(context)},
-                modifier = Modifier.size(40.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.lyrics),
-                    contentDescription = stringResource(id = R.string.player_play),
-                    tint = Color.White
-                )
-            }
-
-            // Play Button with Progress
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .padding(horizontal = 10.dp)
-            ) {
-                CircularProgressIndicator(
-                    progress = { 0f }, // You can bind this to state
-                    modifier = Modifier.size(45.dp),
-                    color = Color.Gray,
-                    strokeWidth = 4.dp
+                // Album Image
+                Image(
+                    painter = remember(song.artwork) { BitmapPainter(song.artwork.asImageBitmap()) } ,
+                    contentDescription = "Album Art",
+                    modifier = Modifier.size(50.dp)
                 )
 
+                Column(
+                    modifier = Modifier
+                        .padding(start = 10.dp)
+                        .weight(1f),
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    Text(
+                        text = song.artist,
+                        fontSize = 20.sp,
+                        color = Color.White,
+                        modifier = Modifier.padding(top = 5.dp),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        text = song.title,
+                        fontSize = 20.sp,
+                        color = Color.White,
+                        modifier = Modifier.padding(bottom = 10.dp),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+
+                // Lyrics Button
                 IconButton(
-                    onClick = {bottomSheetViewModel.togglePlayPause(context)},
+                    onClick = {bottomSheetViewModel.onPlay(context)},
                     modifier = Modifier.size(40.dp)
                 ) {
                     Icon(
-                        painter = painterResource(id = if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play),
-                        contentDescription = stringResource(id = if (isPlaying) R.string.player_pause else R.string.player_play),
+                        painter = painterResource(id = R.drawable.lyrics),
+                        contentDescription = stringResource(id = R.string.player_play),
                         tint = Color.White
                     )
                 }
-            }
 
-            // Next Button
-            IconButton(
-                onClick = {bottomSheetViewModel.onSkip(context)},
-                modifier = Modifier.size(40.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_skip_next),
-                    contentDescription = stringResource(id = R.string.player_play),
-                    tint = Color.White
-                )
+                // Play Button with Progress
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp)
+                ) {
+                    CircularProgressIndicator(
+                        progress = { 0f }, // You can bind this to state
+                        modifier = Modifier.size(45.dp),
+                        color = Color.Gray,
+                        strokeWidth = 4.dp
+                    )
+
+                    IconButton(
+                        onClick = {bottomSheetViewModel.togglePlayPause(context)},
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play),
+                            contentDescription = stringResource(id = if (isPlaying) R.string.player_pause else R.string.player_play),
+                            tint = Color.White
+                        )
+                    }
+                }
+
+                // Next Button
+                IconButton(
+                    onClick = {bottomSheetViewModel.onSkip(context)},
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_skip_next),
+                        contentDescription = stringResource(id = R.string.player_play),
+                        tint = Color.White
+                    )
+                }
             }
         }
     }
