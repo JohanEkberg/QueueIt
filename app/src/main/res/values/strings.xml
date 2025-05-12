@@ -20,4 +20,7 @@
 
     <!-- Album grid -->
     <string name="album_grid_card_number_of_songs">Songs:</string>
+
+    <!-- Artists list -->
+    <string name="artist_list_item_number_of_albums">Albums:</string>
 </resources>

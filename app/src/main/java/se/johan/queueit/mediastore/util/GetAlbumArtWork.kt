@@ -22,3 +22,5 @@ fun getAlbumArtWork(context: Context, artWork: String) : Bitmap {
         BitmapFactory.decodeResource(context.resources, R.drawable.default_music2)
     }
 }
+
+fun getDefaultArtWork(context: Context) = BitmapFactory.decodeResource(context.resources, R.drawable.default_music2)

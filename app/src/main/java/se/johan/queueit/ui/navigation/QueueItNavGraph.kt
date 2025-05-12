@@ -9,6 +9,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import se.johan.queueit.ui.screens.AlbumScreen
 import se.johan.queueit.ui.screens.AlbumScreenIdentifier
+import se.johan.queueit.ui.screens.ArtistScreen
+import se.johan.queueit.ui.screens.ArtistScreenIdentifier
 import se.johan.queueit.ui.screens.HomeScreen
 import se.johan.queueit.ui.screens.HomeScreenIdentifier
 import se.johan.queueit.ui.screens.SettingsScreen
@@ -34,6 +36,10 @@ fun QueueItNavGraph(navController: NavHostController, innerPadding: PaddingValue
         // Map album screen identifier with the album screen
         composable<AlbumScreenIdentifier> {
             AlbumScreen(navController)
+        }
+        // Map artist screen identifier with the artist screen
+        composable<ArtistScreenIdentifier> {
+            ArtistScreen(navController)
         }
         // Map settings screen identifier with the settings screen
         composable<SettingsScreenIdentifier> {

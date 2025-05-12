@@ -32,11 +32,19 @@ fun TopToolbar(
         title = { Text(stringResource(R.string.app_name), color = Color.White) },
         actions = {
             IconButton(onClick = { }) {
-                Icon(Icons.Default.Search, contentDescription = "Search")
+                Icon(
+                    Icons.Default.Search,
+                    contentDescription = "Search",
+                    tint = Color.White
+                )
             }
 
             IconButton(onClick = { showMenu = true }) {
-                Icon(Icons.Default.MoreVert, contentDescription = "Menu")
+                Icon(
+                    Icons.Default.MoreVert,
+                    contentDescription = "Menu",
+                    tint = Color.White
+                )
             }
 
             DropdownMenu(

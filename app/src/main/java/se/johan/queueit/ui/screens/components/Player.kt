@@ -82,7 +82,7 @@ fun Player(
                 Text(
                     text = artist,
                     fontSize = 20.sp,
-                    color = Color.Gray,
+                    color = Color.White,
                     modifier = Modifier.padding(top = 5.dp),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis

@@ -35,6 +35,7 @@ fun AlbumTracks(
                 albumGroup = it.artist?.artistName ?: "[Unknown artist]",
                 playTime = getFormattedDurationTime(it.songEntity.duration ?: ""),
                 modifier = Modifier
+                    .background(MaterialTheme.colorScheme.primary)
                     .clickable {
                     onTrackClick(it)
 

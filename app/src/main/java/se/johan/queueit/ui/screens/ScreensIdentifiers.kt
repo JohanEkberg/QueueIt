@@ -17,3 +17,6 @@ object SettingsScreenIdentifier
 
 @Serializable
 data class AlbumScreenIdentifier(val albumId: Long)
+
+@Serializable
+data class ArtistScreenIdentifier(val artistId: Long)
