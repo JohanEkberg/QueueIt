@@ -18,10 +18,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import se.johan.queueit.ui.screens.ArtistScreenIdentifier
-import se.johan.queueit.viewmodel.ArtistsViewModel
+import se.johan.queueit.viewmodel.ArtistsPageViewModel
 
 @Composable
-fun ArtistsList(navController: NavController, artistsViewModel: ArtistsViewModel = hiltViewModel()) {
+fun ArtistsListPage(navController: NavController, artistsViewModel: ArtistsPageViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val artists = artistsViewModel.artists.collectAsLazyPagingItems()
 

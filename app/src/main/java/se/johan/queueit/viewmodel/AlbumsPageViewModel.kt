@@ -13,28 +13,27 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import se.johan.queueit.TAG
-import se.johan.queueit.model.database.ArtistWithSongs
-import se.johan.queueit.model.database.SongEntity
+import se.johan.queueit.model.database.AlbumWithSongs
 import se.johan.queueit.model.usecases.AudioDataUseCases
 import se.johan.queueit.util.calculateGridImageSize
-import se.johan.queueit.util.calculateListImageSize
 import javax.inject.Inject
 
 @HiltViewModel
-class ArtistsViewModel @Inject constructor (
+class AlbumsPageViewModel @Inject constructor (
     private val audioDataUseCases: AudioDataUseCases
 ) : ViewModel() {
-    private val _artists = MutableStateFlow<PagingData<ArtistWithSongs>>(PagingData.empty())
-    val artists: StateFlow<PagingData<ArtistWithSongs>> = _artists
+    // Backing field with MutableStateFlow
+    private val _albums = MutableStateFlow<PagingData<AlbumWithSongs>>(PagingData.empty())
+    val albums: StateFlow<PagingData<AlbumWithSongs>> = _albums
 
-    fun getArtists() {
+    fun getAlbums() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 try {
-                    audioDataUseCases.getPagedArtistWithSongs()
+                    audioDataUseCases.getPagedAlbumWithSong()
                         .cachedIn(this) // still cache paging flow inside this coroutine
                         .collect { pagingData ->
-                            _artists.value = pagingData
+                            _albums.value = pagingData
                         }
                 } catch(e: Exception) {
                     Log.e(TAG, "Failed to get albums, exception: ${e.message}")
@@ -43,17 +42,5 @@ class ArtistsViewModel @Inject constructor (
         }
     }
 
-    fun getNumberOfAlbums(listOfSongs: List<SongEntity>) : String {
-        return try {
-            listOfSongs
-                .mapNotNull { it.songAlbumId }
-                .distinct()
-                .count().toString()
-        } catch(e: Exception) {
-            Log.e(TAG, "Failed to get number of albums, exception: ${e.message}")
-            ""
-        }
-    }
-
-    fun getItemSize(screenWidthDp: Int): Dp = calculateListImageSize(screenWidthDp)
+    fun getItemSize(screenWidthDp: Int): Dp = calculateGridImageSize(screenWidthDp)
 }

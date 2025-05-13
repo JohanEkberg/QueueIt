@@ -20,8 +20,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
-import se.johan.queueit.ui.screens.components.AlbumGrid
-import se.johan.queueit.ui.screens.components.ArtistsList
+import se.johan.queueit.ui.screens.components.AlbumGridPage
+import se.johan.queueit.ui.screens.components.ArtistsListPage
+import se.johan.queueit.ui.screens.components.QueuePage
 import se.johan.queueit.ui.theme.Gray400
 import se.johan.queueit.viewmodel.BottomSheetViewModel
 import se.johan.queueit.viewmodel.dynamicBottomPadding
@@ -76,10 +77,13 @@ fun HomeScreen(
         ) { page ->
             when (page) {
                 0 -> {
-                    AlbumGrid(navController)
+                    AlbumGridPage(navController)
                 }
                 1 -> {
-                    ArtistsList(navController)
+                    ArtistsListPage(navController)
+                }
+                2 -> {
+                    QueuePage(navController)
                 }
                 else -> {
                     Text("Test page: $page", Modifier.fillMaxSize())

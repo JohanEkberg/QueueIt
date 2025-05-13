@@ -13,27 +13,27 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import se.johan.queueit.TAG
-import se.johan.queueit.model.database.AlbumWithSongs
+import se.johan.queueit.model.database.ArtistWithSongs
+import se.johan.queueit.model.database.SongEntity
 import se.johan.queueit.model.usecases.AudioDataUseCases
-import se.johan.queueit.util.calculateGridImageSize
+import se.johan.queueit.util.calculateListImageSize
 import javax.inject.Inject
 
 @HiltViewModel
-class AlbumsViewModel @Inject constructor (
+class ArtistsPageViewModel @Inject constructor (
     private val audioDataUseCases: AudioDataUseCases
 ) : ViewModel() {
-    // Backing field with MutableStateFlow
-    private val _albums = MutableStateFlow<PagingData<AlbumWithSongs>>(PagingData.empty())
-    val albums: StateFlow<PagingData<AlbumWithSongs>> = _albums
+    private val _artists = MutableStateFlow<PagingData<ArtistWithSongs>>(PagingData.empty())
+    val artists: StateFlow<PagingData<ArtistWithSongs>> = _artists
 
-    fun getAlbums() {
+    fun getArtists() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 try {
-                    audioDataUseCases.getPagedAlbumWithSong()
+                    audioDataUseCases.getPagedArtistWithSongs()
                         .cachedIn(this) // still cache paging flow inside this coroutine
                         .collect { pagingData ->
-                            _albums.value = pagingData
+                            _artists.value = pagingData
                         }
                 } catch(e: Exception) {
                     Log.e(TAG, "Failed to get albums, exception: ${e.message}")
@@ -42,5 +42,17 @@ class AlbumsViewModel @Inject constructor (
         }
     }
 
-    fun getItemSize(screenWidthDp: Int): Dp = calculateGridImageSize(screenWidthDp)
+    fun getNumberOfAlbums(listOfSongs: List<SongEntity>) : String {
+        return try {
+            listOfSongs
+                .mapNotNull { it.songAlbumId }
+                .distinct()
+                .count().toString()
+        } catch(e: Exception) {
+            Log.e(TAG, "Failed to get number of albums, exception: ${e.message}")
+            ""
+        }
+    }
+
+    fun getItemSize(screenWidthDp: Int): Dp = calculateListImageSize(screenWidthDp)
 }

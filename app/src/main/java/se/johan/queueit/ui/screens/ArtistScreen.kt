@@ -40,12 +40,16 @@ fun ArtistScreen(
                 detectHorizontalDragGestures { _, dragAmount ->
                     offsetX += dragAmount
                     if (offsetX < -swipeThreshold) {
-                        navController.popBackStack()
+                        navController.navigate(HomeScreenIdentifier) {
+                            popUpTo(0) { inclusive = true }
+                            launchSingleTop = true
+                        }
                     }
                 }
             }
     ) {
         ExpandableAlbumList(
+            navController,
             albumsFromArtist =  albumsFromArtist,
             artistViewModel.addTrackToQueue,
             bottomSheetViewModel = bottomSheetViewModel

@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,14 +33,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import se.johan.queueit.mediastore.util.getArtWork
 import se.johan.queueit.mediastore.util.getDefaultArtWork
 import se.johan.queueit.mediastore.util.getFormattedDurationTime
 import se.johan.queueit.model.database.AlbumEntity
 import se.johan.queueit.model.database.SongWithArtist
+import se.johan.queueit.ui.screens.HomeScreenIdentifier
 import se.johan.queueit.util.adjustForWhiteText
 import se.johan.queueit.util.getDominantColor
 import se.johan.queueit.viewmodel.AlbumUiModel
@@ -47,6 +51,7 @@ import se.johan.queueit.viewmodel.BottomSheetViewModel
 
 @Composable
 fun ExpandableAlbumList(
+    navController: NavController,
     albumsFromArtist: List<AlbumUiModel>,
     onTrackClick: (SongWithArtist) -> Unit,
     bottomSheetViewModel: BottomSheetViewModel
@@ -69,6 +74,10 @@ fun ExpandableAlbumList(
     // Use remember to manage expanded state per album
     var expandedStates by remember { mutableStateOf(albumsFromArtist.associate { it.album to false }) }
 
+    // Setup swipe back properties
+    val swipeThreshold = 100f
+    var offsetX by remember { mutableStateOf(0f) }
+
     LazyColumn {
         items(albumsFromArtist.size) { index ->
             val albumUiModel = albumsFromArtist[index]
@@ -79,6 +88,17 @@ fun ExpandableAlbumList(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp)
+                    .pointerInput(Unit) {
+                        detectHorizontalDragGestures { _, dragAmount ->
+                            offsetX += dragAmount
+                            if (offsetX < -swipeThreshold) {
+                                navController.navigate(HomeScreenIdentifier) {
+                                    popUpTo(0) { inclusive = true }
+                                    launchSingleTop = true
+                                }
+                            }
+                        }
+                    }
             ) {
                 // Album Header
                 Row(

@@ -49,7 +49,10 @@ fun AlbumScreen(
                 detectHorizontalDragGestures { _, dragAmount ->
                     offsetX += dragAmount
                     if (offsetX < -swipeThreshold) {
-                        navController.popBackStack()
+                        navController.navigate(HomeScreenIdentifier) {
+                            popUpTo(0) { inclusive = true }
+                            launchSingleTop = true
+                        }
                     }
                 }
             }

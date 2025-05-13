@@ -18,10 +18,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import se.johan.queueit.ui.screens.AlbumScreenIdentifier
-import se.johan.queueit.viewmodel.AlbumsViewModel
+import se.johan.queueit.viewmodel.AlbumsPageViewModel
 
 @Composable
-fun AlbumGrid(navController: NavController, albumsViewModel: AlbumsViewModel = hiltViewModel()) {
+fun AlbumGridPage(navController: NavController, albumsViewModel: AlbumsPageViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val albums = albumsViewModel.albums.collectAsLazyPagingItems()
 
