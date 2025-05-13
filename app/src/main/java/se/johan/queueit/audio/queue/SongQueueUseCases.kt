@@ -8,7 +8,8 @@ data class SongQueueUseCases (
     val clearQueue: ClearQueue,
     val queueSize: QueueSize,
     val isEmpty: IsEmpty,
-    val isEqual: IsEqual
+    val isEqual: IsEqual,
+    val peekQueue: PeekQueue
 )
 class SongQueueException(
     message: String = "",

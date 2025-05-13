@@ -2,10 +2,10 @@ package se.johan.queueit.viewmodel
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.Dp
@@ -14,15 +14,12 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import se.johan.queueit.TAG
 import se.johan.queueit.audio.player.MusicPlayerUseCases
-import se.johan.queueit.audio.queue.SongQueueUseCases
 import se.johan.queueit.mediastore.util.getAlbumArtWork
-import se.johan.queueit.ui.screens.components.Player
 import javax.inject.Inject
 
 @HiltViewModel
 class BottomSheetViewModel @Inject constructor(
     private val musicPlayer: MusicPlayerUseCases,
-    private val songQueue: SongQueueUseCases
 ) : ViewModel() {
     var content by mutableStateOf<(@Composable () -> Unit)?>(null)
         private set
@@ -30,7 +27,13 @@ class BottomSheetViewModel @Inject constructor(
     var currentSong by mutableStateOf<SongData?>(null)
         private set
 
+    var progress by mutableFloatStateOf(0f)
+        private set
+
     var isPlaying by mutableStateOf(false)
+        private set
+
+    var shouldUpdateSong by mutableStateOf(false)
         private set
 
     var isVisible: Boolean = false
@@ -39,8 +42,18 @@ class BottomSheetViewModel @Inject constructor(
     var playerHeight: Dp = 0.dp
         private set
 
+    init {
+        musicPlayer.setOnProgress { progress ->
+            updateProgress(progress)
+        }
+        musicPlayer.setOnCompletion {
+            shouldUpdateSong = true
+        }
+    }
+
     private fun setCurrentSong(context: Context) {
-        val currentTrack = songQueue.getQueueItem()
+        shouldUpdateSong = false
+        val currentTrack = musicPlayer.getCurrentSong()
         currentTrack?.let { song ->
             val artwork = getAlbumArtWork(context, song.albumUri)
             currentSong = SongData(
@@ -54,6 +67,10 @@ class BottomSheetViewModel @Inject constructor(
         }
     }
 
+    private fun updateProgress(progress: Int) {
+        this.progress = progress / 100f  // or keep as Int if you want raw value
+    }
+
     fun updatePlayerHeight(height: Dp) {
         playerHeight = height
     }
@@ -65,6 +82,10 @@ class BottomSheetViewModel @Inject constructor(
             onPlay(context)
         }
         isPlaying = !isPlaying
+    }
+
+    fun updateSong(context: Context) {
+        setCurrentSong(context)
     }
 
     fun show(context: Context, content: @Composable () -> Unit) {

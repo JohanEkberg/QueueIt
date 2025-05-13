@@ -19,8 +19,9 @@ class MusicPlayerRepository @Inject constructor(
 ) {
     private var _mediaPlayer: MediaPlayer? = null
     private val _handler = Handler(Looper.getMainLooper())
-    private var _songChangeCallback: ((AudioFileMetaData?) -> Unit)? = null
-    private var _progressCallback: ((Int) -> Unit)? = null
+    //private var _songChangeCallback: ((AudioFileMetaData?) -> Unit)? = null
+    private var _onCompletionCallback: (() -> Unit)? = null
+    private var _onProgressCallback: ((Int) -> Unit)? = null
     private var _currentSong: AudioFileMetaData? = null
     private var _initDone = false
 
@@ -51,7 +52,8 @@ class MusicPlayerRepository @Inject constructor(
             getMediaPlayerInstance()?.setOnCompletionListener {
                 Log.i(TAG, "Song finished callback")
                 _currentSong = null
-                _progressCallback?.let { it(100) }
+                _onProgressCallback?.let { it(100) }
+                _onCompletionCallback?.let { it() }
                 playSongFromQueue(context)
             }
         } catch(e: Exception) {
@@ -64,7 +66,7 @@ class MusicPlayerRepository @Inject constructor(
         getMediaPlayerInstance()?.release()
         _mediaPlayer = null
         _currentSong = null
-        _songChangeCallback?.let { it(null) }
+        //_songChangeCallback?.let { it(null) }
     }
 
     fun play(context: Context) {
@@ -92,14 +94,14 @@ class MusicPlayerRepository @Inject constructor(
                 Log.i(TAG, "New song to play: ${_currentSong?.artist} - ${_currentSong?.title}")
                 _currentSong?.songUri?.let { songNotNull ->
                     if (playSong(context, songNotNull)) {
-                        _songChangeCallback?.let { it(_currentSong) }
+                        //_songChangeCallback?.let { it(_currentSong) }
                     }
                 }
             } else if (_currentSong != null) {
                 Log.i(TAG, "Queue is empty, play current song")
                 _currentSong?.songUri?.let { songNotNull ->
                     if (playSong(context, songNotNull)) {
-                        _songChangeCallback?.let { it(_currentSong) }
+                        //_songChangeCallback?.let { it(_currentSong) }
                     }
                 }
             } else {
@@ -142,12 +144,12 @@ class MusicPlayerRepository @Inject constructor(
                 val duration = getMediaPlayerInstance()?.duration?.toFloat() ?: 0F
                 val progress: Float = (currentPosition / duration) * 100
 
-                _progressCallback?.let { it(progress.toInt()) }
+                _onProgressCallback?.let { it(progress.toInt()) }
                 if (progress < 100) {
                     _handler.postDelayed(this, 100)
                 }
             } else {
-                _progressCallback?.let { it(0) }
+                _onProgressCallback?.let { it(0) }
             }
         }
     }
@@ -196,5 +198,19 @@ class MusicPlayerRepository @Inject constructor(
         }
     }
 
+    fun setOnProgress(callback: (Int) -> Unit) {
+        _onProgressCallback = callback
+    }
 
+    fun setOnCompletion(callback: () -> Unit) {
+        _onCompletionCallback = callback
+    }
+
+    fun getCurrentSong() : AudioFileMetaData? {
+      return if (_currentSong != null) {
+          _currentSong
+      } else {
+        songQueueUseCases.peekQueue()
+      }
+    }
 }

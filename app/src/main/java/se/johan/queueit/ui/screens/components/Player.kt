@@ -1,8 +1,6 @@
 package se.johan.queueit.ui.screens.components
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,21 +33,28 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModelStoreOwner
 import se.johan.queueit.R
+import se.johan.queueit.ui.theme.blue50
 import se.johan.queueit.viewmodel.BottomSheetViewModel
 
 @Composable
 fun Player(
-//    artWork: Bitmap,
-//    artist: String,
-//    song: String,
+
     bottomSheetViewModel: BottomSheetViewModel = hiltViewModel(LocalContext.current as ViewModelStoreOwner)
 ) {
     val context = LocalContext.current
     val isPlaying = bottomSheetViewModel.isPlaying
     val currentSong = bottomSheetViewModel.currentSong
+    val progress = bottomSheetViewModel.progress
+    val shouldUpdate = bottomSheetViewModel.shouldUpdateSong
 
     // Dynamically get player height for the bottom sheet to adopt to
     val density = LocalDensity.current
+
+    LaunchedEffect(shouldUpdate) {
+        if (shouldUpdate) {
+            bottomSheetViewModel.updateSong(context)
+        }
+    }
 
     currentSong?.let { song ->
         Surface(
@@ -102,12 +108,13 @@ fun Player(
                 // Lyrics Button
                 IconButton(
                     onClick = {bottomSheetViewModel.onPlay(context)},
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.size(48.dp)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.lyrics),
                         contentDescription = stringResource(id = R.string.player_play),
-                        tint = Color.White
+                        tint = Color.White,
+                        modifier = Modifier.size(36.dp)
                     )
                 }
 
@@ -118,20 +125,22 @@ fun Player(
                         .padding(horizontal = 10.dp)
                 ) {
                     CircularProgressIndicator(
-                        progress = { 0f }, // You can bind this to state
+                        progress = { progress },
                         modifier = Modifier.size(45.dp),
-                        color = Color.Gray,
+                        color = blue50,
+                        trackColor = Color.Transparent,
                         strokeWidth = 4.dp
                     )
 
                     IconButton(
                         onClick = {bottomSheetViewModel.togglePlayPause(context)},
-                        modifier = Modifier.size(40.dp)
+                        modifier = Modifier.size(48.dp)
                     ) {
                         Icon(
                             painter = painterResource(id = if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play),
                             contentDescription = stringResource(id = if (isPlaying) R.string.player_pause else R.string.player_play),
-                            tint = Color.White
+                            tint = Color.White,
+                            modifier = Modifier.size(36.dp)
                         )
                     }
                 }
@@ -139,12 +148,13 @@ fun Player(
                 // Next Button
                 IconButton(
                     onClick = {bottomSheetViewModel.onSkip(context)},
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.size(48.dp)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_skip_next),
                         contentDescription = stringResource(id = R.string.player_play),
-                        tint = Color.White
+                        tint = Color.White,
+                        modifier = Modifier.size(36.dp)
                     )
                 }
             }
