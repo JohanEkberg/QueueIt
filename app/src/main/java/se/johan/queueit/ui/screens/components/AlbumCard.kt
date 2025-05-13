@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,7 +43,7 @@ fun AlbumCard(
     albumTitle: String,
     albumGroup: String,
     nbrOfSongs: String,
-    artWork: Bitmap,
+    artWork: Bitmap?,
     modifier: Modifier,
     itemSize: Dp
 ) {
@@ -55,10 +56,12 @@ fun AlbumCard(
 
         var backgroundColor by remember { mutableStateOf(Color.Black) }
 
-        LaunchedEffect(Unit) {
-            getDominantColor(artWork) { dominantColor ->
-                val adjustedColor = adjustForWhiteText(dominantColor)
-                backgroundColor = adjustedColor
+        LaunchedEffect(artWork) {
+            artWork?.let {
+                getDominantColor(it) { dominantColor ->
+                    val adjustedColor = adjustForWhiteText(dominantColor)
+                    backgroundColor = adjustedColor
+                }
             }
         }
 
@@ -66,13 +69,22 @@ fun AlbumCard(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.CenterStart
         ) {
-            Image(
-                painter = remember(artWork) { BitmapPainter(artWork.asImageBitmap()) },
-                contentDescription = "Album cover",
-                modifier = Modifier
-                    .size(itemSize)
-                    .clip(RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp))
-            )
+            artWork?.let {
+                Image(
+                    painter = remember(artWork) { BitmapPainter(artWork.asImageBitmap()) },
+                    contentDescription = "Album cover",
+                    modifier = Modifier
+                        .size(itemSize)
+                        .clip(RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp))
+                )
+            } ?: run {
+                Image(
+                    painter = painterResource(id = R.drawable.default_music2),
+                    contentDescription = "Artist",
+                    modifier = Modifier
+                        .size(itemSize)
+                )
+            }
         }
 
         Column(

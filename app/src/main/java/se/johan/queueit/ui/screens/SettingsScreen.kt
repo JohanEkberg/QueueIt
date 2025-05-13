@@ -86,6 +86,22 @@ fun SettingsScreen(
                     modifier = Modifier.fillMaxWidth()
                 )
             }
+
+//            Button(
+//                onClick = {settingsViewModel.getArtistArtwork(appContext)},
+//                enabled = true,
+//                shape = ButtonDefaults.shape,
+//                modifier = Modifier.fillMaxWidth(),
+//                colors = ButtonDefaults.buttonColors(
+//                    containerColor = MaterialTheme.colorScheme.primary,     // Background color
+//                    contentColor = MaterialTheme.colorScheme.onPrimary      // Text (content) color
+//                )
+//            ) {
+//                Text(
+//                    stringResource(R.string.settings_get_artist_artwork),
+//                    style = MaterialTheme.typography.labelLarge
+//                )
+//            }
         }
     }
 }

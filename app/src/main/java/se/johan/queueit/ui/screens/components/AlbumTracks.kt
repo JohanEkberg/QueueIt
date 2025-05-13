@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -16,11 +15,9 @@ import androidx.compose.ui.unit.dp
 import se.johan.queueit.mediastore.util.getFormattedDurationTime
 import se.johan.queueit.model.database.SongWithArtist
 import se.johan.queueit.viewmodel.BottomSheetViewModel
-import se.johan.queueit.viewmodel.SongData
 
 @Composable
 fun AlbumTracks(
-    albumArtWork: Bitmap,
     tracks: List<SongWithArtist>,
     onTrackClick: (SongWithArtist) -> Unit,
     bottomSheetViewModel: BottomSheetViewModel

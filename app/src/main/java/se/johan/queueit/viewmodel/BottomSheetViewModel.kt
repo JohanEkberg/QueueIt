@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import se.johan.queueit.TAG
 import se.johan.queueit.audio.player.MusicPlayerUseCases
-import se.johan.queueit.mediastore.util.getAlbumArtWork
+import se.johan.queueit.mediastore.util.getArtWork
 import javax.inject.Inject
 
 @HiltViewModel
@@ -55,7 +55,7 @@ class BottomSheetViewModel @Inject constructor(
         shouldUpdateSong = false
         val currentTrack = musicPlayer.getCurrentSong()
         currentTrack?.let { song ->
-            val artwork = getAlbumArtWork(context, song.albumUri)
+            val artwork = getArtWork(context, song.albumUri)
             currentSong = SongData(
                 artwork = artwork,
                 artist = song.artist,

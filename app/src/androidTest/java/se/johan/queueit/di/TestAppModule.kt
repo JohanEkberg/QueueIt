@@ -7,10 +7,13 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import se.johan.queueit.audio.data.AudioFileMetaData
+import se.johan.queueit.audio.player.GetCurrentSong
 import se.johan.queueit.audio.player.MusicPlayerRepository
 import se.johan.queueit.audio.player.MusicPlayerUseCases
 import se.johan.queueit.audio.player.Pause
 import se.johan.queueit.audio.player.Play
+import se.johan.queueit.audio.player.SetOnCompletion
+import se.johan.queueit.audio.player.SetOnProgress
 import se.johan.queueit.audio.player.Skip
 import se.johan.queueit.audio.player.Stop
 import se.johan.queueit.audio.queue.AddQueueItem
@@ -19,6 +22,7 @@ import se.johan.queueit.audio.queue.GetQueueItem
 import se.johan.queueit.audio.queue.GetQueueItems
 import se.johan.queueit.audio.queue.IsEmpty
 import se.johan.queueit.audio.queue.IsEqual
+import se.johan.queueit.audio.queue.PeekQueue
 import se.johan.queueit.audio.queue.QueueSize
 import se.johan.queueit.audio.queue.RemoveQueueItem
 import se.johan.queueit.audio.queue.SongQueueUseCases
@@ -106,7 +110,8 @@ object TestAppModule {
             isEmpty = IsEmpty(queue),
             isEqual = IsEqual(queue),
             queueSize = QueueSize(queue),
-            removeQueueItem = RemoveQueueItem(queue)
+            removeQueueItem = RemoveQueueItem(queue),
+            peekQueue = PeekQueue(queue)
         )
     }
 
@@ -123,7 +128,10 @@ object TestAppModule {
             play = Play(repository),
             pause = Pause(repository),
             skip = Skip(repository),
-            stop = Stop(repository)
+            stop = Stop(repository),
+            setOnProgress = SetOnProgress(repository),
+            setOnCompletion = SetOnCompletion(repository),
+            getCurrentSong = GetCurrentSong(repository)
         )
     }
 }

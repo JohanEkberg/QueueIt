@@ -46,6 +46,18 @@ class SettingsViewModel @Inject constructor (
             }
             _pendingScan.value = false
         }
-
     }
+
+//    fun getArtistsArtwork(context: Context) {
+//        viewModelScope.launch {
+//            _successfulScan.value = withContext(Dispatchers.IO) {
+//                try {
+//                   true
+//                } catch (e: Exception) {
+//                    Log.e(TAG, "Scan autio data failed, ${e.message}")
+//                    false
+//                }
+//            }
+//        }
+//    }
 }

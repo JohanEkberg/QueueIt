@@ -13,6 +13,7 @@
 
     <!-- Settings screen texts -->
     <string name="settings_start_scan">Start scan</string>
+    <string name="settings_get_artist_artwork">Get artists artwork</string>
 
     <!-- Player -->
     <string name="player_play">Play song</string>

@@ -25,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -35,7 +36,7 @@ import se.johan.queueit.util.getDominantColor
 
 @Composable
 fun ArtistListItem(
-    artistArtWork: Bitmap,
+    artistArtWork: Bitmap?,
     artist: String,
     numberOfAlbums: String,
     itemSize: Dp,
@@ -43,10 +44,12 @@ fun ArtistListItem(
 ) {
     var backgroundColor by remember { mutableStateOf(Color.Black) }
 
-    LaunchedEffect(Unit) {
-        getDominantColor(artistArtWork) { dominantColor ->
-            val adjustedColor = adjustForWhiteText(dominantColor)
-            backgroundColor = adjustedColor
+    LaunchedEffect(artistArtWork) {
+        artistArtWork?.let {
+            getDominantColor(it) { dominantColor ->
+                val adjustedColor = adjustForWhiteText(dominantColor)
+                backgroundColor = adjustedColor
+            }
         }
     }
 
@@ -57,12 +60,22 @@ fun ArtistListItem(
             .background(backgroundColor),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = remember(artistArtWork) { BitmapPainter(artistArtWork.asImageBitmap()) },
-            contentDescription = "Artist",
-            modifier = Modifier
-                .size(itemSize)
-        )
+        artistArtWork?.let {
+            Image(
+                painter = remember(it) { BitmapPainter(it.asImageBitmap()) },
+                contentDescription = "Artist",
+                modifier = Modifier
+                    .size(itemSize)
+            )
+        } ?: run {
+            Image(
+                painter = painterResource(id = R.drawable.default_music2),
+                contentDescription = "Artist",
+                modifier = Modifier
+                    .size(itemSize)
+            )
+        }
+
 
         Column(
             modifier = Modifier

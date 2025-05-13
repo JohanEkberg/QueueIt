@@ -35,17 +35,15 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import se.johan.queueit.mediastore.util.getAlbumArtWork
+import se.johan.queueit.mediastore.util.getArtWork
 import se.johan.queueit.mediastore.util.getDefaultArtWork
 import se.johan.queueit.mediastore.util.getFormattedDurationTime
 import se.johan.queueit.model.database.AlbumEntity
-import se.johan.queueit.model.database.ArtistEntity
 import se.johan.queueit.model.database.SongWithArtist
 import se.johan.queueit.util.adjustForWhiteText
 import se.johan.queueit.util.getDominantColor
 import se.johan.queueit.viewmodel.AlbumUiModel
 import se.johan.queueit.viewmodel.BottomSheetViewModel
-import se.johan.queueit.viewmodel.SongData
 
 @Composable
 fun ExpandableAlbumList(
@@ -61,7 +59,7 @@ fun ExpandableAlbumList(
     // Compute dominant colors once when albums are first available and also get the album bitmap
     LaunchedEffect(albumsFromArtist) {
         albumsFromArtist.forEach { albumUiModel ->
-            val bitmap = getAlbumArtWork(context, albumUiModel.album.albumUri ?: "")
+            val bitmap = getArtWork(context, albumUiModel.album.albumUri ?: "")
             getDominantColor(bitmap) { color ->
                 dominantColors[albumUiModel.album] = Pair(bitmap,adjustForWhiteText(color))
             }

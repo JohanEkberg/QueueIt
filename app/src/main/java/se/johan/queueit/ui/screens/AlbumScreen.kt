@@ -16,7 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigation.NavController
-import se.johan.queueit.mediastore.util.getAlbumArtWork
+import se.johan.queueit.mediastore.util.getArtWork
 import se.johan.queueit.ui.screens.components.AlbumHeader
 import se.johan.queueit.ui.screens.components.AlbumTracks
 import se.johan.queueit.viewmodel.AlbumViewModel
@@ -34,7 +34,7 @@ fun AlbumScreen(
     val albumUri = album.albumEntity.albumUri
 
     val albumArtWork = remember(albumUri) {
-        getAlbumArtWork(context, albumUri ?: "")
+        getArtWork(context, albumUri ?: "")
     }
 
     // Setup swipe back properties
@@ -55,6 +55,6 @@ fun AlbumScreen(
             }
     ) {
         AlbumHeader(album, albumArtWork)
-        AlbumTracks(albumArtWork, album.songList, albumViewModel.addTrackToQueue, bottomSheetViewModel)
+        AlbumTracks(album.songList, albumViewModel.addTrackToQueue, bottomSheetViewModel)
     }
 }

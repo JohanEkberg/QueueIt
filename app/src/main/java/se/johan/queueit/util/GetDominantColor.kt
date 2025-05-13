@@ -38,9 +38,12 @@ fun adjustForWhiteText(bgColor: Int): Color {
     val color = Color(bgColor)
     val luminance = color.luminance() // from androidx.compose.ui.graphics
 
-    return if (luminance > 0.7f) {
+    return if (luminance > 0.5f && luminance < 0.7f) {
         // Too bright, darken it
         color.copy(alpha = 1f).compositeOver(Color.Black.copy(alpha = 0.3f))
+    } else if (luminance >= 0.7f) {
+        // Way to bright, use black background
+        Color.Black
     } else {
         // Dark enough, use as is or brighten slightly if too dark
         color

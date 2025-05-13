@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
-import se.johan.queueit.mediastore.util.getAlbumArtWork
 import se.johan.queueit.ui.screens.AlbumScreenIdentifier
 import se.johan.queueit.viewmodel.AlbumsViewModel
 
@@ -42,14 +41,16 @@ fun AlbumGrid(navController: NavController, albumsViewModel: AlbumsViewModel = h
             contentPadding = PaddingValues(bottom = 0.dp)
         ) {
             items(albums.itemCount) { index ->
-                albums[index]?.let {
+                val albumItem =  albums[index]
+                if (albumItem != null && albumItem.songList.isNotEmpty()) {
+                    val albumArt = produceBitmap(context, albumItem.songList[0].songEntity.albumUri ?: "")
                     AlbumCard(
-                        albumTitle = it.albumEntity.albumName ?: "",
-                        albumGroup = it.songList[0].artist?.artistName ?: "",
-                        nbrOfSongs = it.songList.size.toString(),
-                        artWork = getAlbumArtWork(context, it.albumEntity.albumUri ?: ""),
+                        albumTitle = albumItem.albumEntity.albumName ?: "",
+                        albumGroup = albumItem.songList[0].artist?.artistName ?: "",
+                        nbrOfSongs = albumItem.songList.size.toString(),
+                        artWork = albumArt,
                         modifier = Modifier.clickable {
-                            navController.navigate(AlbumScreenIdentifier(it.albumEntity.albumId))
+                            navController.navigate(AlbumScreenIdentifier(albumItem.albumEntity.albumId))
                         },
                         itemSize = albumsViewModel.getItemSize(LocalConfiguration.current.screenWidthDp)
                     )

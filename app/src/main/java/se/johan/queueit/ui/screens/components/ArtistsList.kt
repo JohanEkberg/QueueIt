@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
-import se.johan.queueit.mediastore.util.getAlbumArtWork
 import se.johan.queueit.ui.screens.ArtistScreenIdentifier
 import se.johan.queueit.viewmodel.ArtistsViewModel
 
@@ -39,20 +38,23 @@ fun ArtistsList(navController: NavController, artistsViewModel: ArtistsViewModel
     ) {
         LazyColumn {
             items(artists.itemCount) { index ->
-                artists[index]?.let {
+                val artistItem =  artists[index]
+
+                if (artistItem != null && artistItem.songList.isNotEmpty()) {
+                    val albumArt = produceBitmap(context, artistItem.songList[0].albumUri ?: "")
                     ArtistListItem(
-                        artistArtWork = getAlbumArtWork(context, ""),
-                        artist = it.artistEntity.artistName ?: "",
-                        numberOfAlbums = artistsViewModel.getNumberOfAlbums(it.songList),
+                        artistArtWork = albumArt,
+                        artist = artistItem.artistEntity.artistName ?: "",
+                        numberOfAlbums = artistsViewModel.getNumberOfAlbums(artistItem.songList),
                         modifier = Modifier.clickable {
-                            navController.navigate(ArtistScreenIdentifier(it.artistEntity.artistId))
+                            navController.navigate(ArtistScreenIdentifier(artistItem.artistEntity.artistId))
                         },
                         itemSize = artistsViewModel.getItemSize(LocalConfiguration.current.screenWidthDp)
                     )
                 }
-
                 Spacer(modifier = Modifier.height(2.dp))
             }
         }
     }
 }
+

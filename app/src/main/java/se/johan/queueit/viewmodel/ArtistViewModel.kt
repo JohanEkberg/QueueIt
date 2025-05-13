@@ -1,6 +1,5 @@
 package se.johan.queueit.viewmodel
 
-import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.MutableState
@@ -16,7 +15,6 @@ import kotlinx.coroutines.withContext
 import se.johan.queueit.TAG
 import se.johan.queueit.audio.data.AudioFileMetaData
 import se.johan.queueit.audio.queue.SongQueueUseCases
-import se.johan.queueit.mediastore.util.getAlbumArtWork
 import se.johan.queueit.model.database.AlbumEntity
 import se.johan.queueit.model.database.AlbumWithSongs2
 import se.johan.queueit.model.database.ArtistEntity
