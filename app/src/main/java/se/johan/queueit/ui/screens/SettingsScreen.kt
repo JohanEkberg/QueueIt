@@ -2,6 +2,7 @@ package se.johan.queueit.ui.screens
 
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,79 +30,87 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import se.johan.queueit.R
+import se.johan.queueit.ui.screens.components.TextFlowLeftToRight
+import se.johan.queueit.ui.theme.blue100
+import se.johan.queueit.ui.theme.blue250
+import se.johan.queueit.ui.theme.blue80
 import se.johan.queueit.viewmodel.SettingsViewModel
 
 @Composable
 fun SettingsScreen(
     navController: NavController,
     settingsViewModel: SettingsViewModel = hiltViewModel()
-    ) {
+) {
     val context = LocalContext.current
     val appContext = context.applicationContext
-    Scaffold { contentPadding ->
-        val successfulScan = settingsViewModel.successfulScan.collectAsState().value
-        val pendingScan = settingsViewModel.pendingScan.collectAsState().value
 
-        if (successfulScan) {
-            navController.navigate(HomeScreenIdentifier)
+    val successfulScan = settingsViewModel.successfulScan.collectAsState().value
+    val pendingScan = settingsViewModel.pendingScan.collectAsState().value
+    val artistsDetected = settingsViewModel.artistsDetected.collectAsState().value
+
+    Scaffold { contentPadding ->
+        if (successfulScan == true) {
+            // navController.navigate(HomeScreenIdentifier)
         }
 
         val swipeThreshold = 100f
         var offsetX by remember { mutableStateOf(0f) }
 
-        Column(modifier = Modifier
-            .padding(contentPadding)
-            .padding(horizontal = 20.dp)
-            .fillMaxSize()
-            .pointerInput(Unit) {
-                detectHorizontalDragGestures { _, dragAmount ->
-                    offsetX += dragAmount
-                    if (offsetX < -swipeThreshold) {
-                        navController.popBackStack()
-                    }
-                }
-            },
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally,
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(contentPadding)
         ) {
-            Button(
-                onClick = {settingsViewModel.doScan(appContext)},
-                enabled = !pendingScan,
-                shape = ButtonDefaults.shape,
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,     // Background color
-                    contentColor = MaterialTheme.colorScheme.onPrimary      // Text (content) color
-                )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 20.dp)
+                    .pointerInput(Unit) {
+                        detectHorizontalDragGestures { _, dragAmount ->
+                            offsetX += dragAmount
+                            if (offsetX < -swipeThreshold) {
+                                navController.popBackStack()
+                            }
+                        }
+                    },
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    stringResource(R.string.settings_start_scan),
-                    style = MaterialTheme.typography.labelLarge
-                )
+                Spacer(modifier = Modifier.weight(1f))
+                TextFlowLeftToRight(artistsDetected)
+                Spacer(modifier = Modifier.height(300.dp))
+
+                Button(
+                    onClick = { settingsViewModel.doScan(appContext) },
+                    enabled = !pendingScan,
+                    shape = ButtonDefaults.shape,
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    )
+                ) {
+                    Text(
+                        stringResource(R.string.settings_start_scan),
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
             }
 
             if (pendingScan) {
-                Spacer(modifier = Modifier.height(16.dp))
                 LinearProgressIndicator(
-                    modifier = Modifier.fillMaxWidth()
+                    color = blue80,       // The bar (progress) color
+                    trackColor = blue250, // The background track color
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
+                        .height(4.dp)
                 )
             }
-
-//            Button(
-//                onClick = {settingsViewModel.getArtistArtwork(appContext)},
-//                enabled = true,
-//                shape = ButtonDefaults.shape,
-//                modifier = Modifier.fillMaxWidth(),
-//                colors = ButtonDefaults.buttonColors(
-//                    containerColor = MaterialTheme.colorScheme.primary,     // Background color
-//                    contentColor = MaterialTheme.colorScheme.onPrimary      // Text (content) color
-//                )
-//            ) {
-//                Text(
-//                    stringResource(R.string.settings_get_artist_artwork),
-//                    style = MaterialTheme.typography.labelLarge
-//                )
-//            }
         }
     }
 }

@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import se.johan.queueit.TAG
+import se.johan.queueit.mediastore.ScanHandler
 import se.johan.queueit.mediastore.usecases.AudioScannerUseCases
 import se.johan.queueit.mediastore.usecases.StartScan
 import se.johan.queueit.model.database.AudioDatabase
@@ -26,17 +27,23 @@ import javax.inject.Inject
 @HiltViewModel
 class SplashViewModel @Inject constructor (
     private val audioDataUseCases: AudioDataUseCases,
-    private val audioScannerUseCases: AudioScannerUseCases
+    private val scanHandler: ScanHandler
 ) : ViewModel() {
 
 //    private val _requireScan: MutableState<Boolean?> = mutableStateOf(null)
 //    var requireScan: State<Boolean?> = _requireScan
 
-    private val _successfulStartup: MutableStateFlow<Boolean?> = MutableStateFlow(null)
-    var successfulStartup: StateFlow<Boolean?> = _successfulStartup
+//    private val _artistDetected: MutableStateFlow<String> = MutableStateFlow("")
+//    var artistDetected: StateFlow<String> = _artistDetected
+//
+//    private val _successfulStartup: MutableStateFlow<Boolean?> = MutableStateFlow(null)
+//    var successfulStartup: StateFlow<Boolean?> = _successfulStartup
 
 //    private val _isPermissionGranted: MutableState<Boolean> = mutableStateOf(false)
 //    val isPermissionGranted: State<Boolean> = _isPermissionGranted
+
+    val artistsDetected: StateFlow<List<String>> = scanHandler.artistsDetected
+    var successfulScan: StateFlow<Boolean?> = scanHandler.successfulScan
 
     private val _isPermissionGranted: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isPermissionGranted: StateFlow<Boolean> = _isPermissionGranted
@@ -50,16 +57,13 @@ class SplashViewModel @Inject constructor (
 
     fun requireScan(context: Context) {
         viewModelScope.launch {
-            _successfulStartup.value = withContext(Dispatchers.IO) {
+            withContext(Dispatchers.IO) {
                 try {
-                    if (audioDataUseCases.databaseExist(context)) {
-                        true
-                    } else {
-                        audioScannerUseCases.startScan(context)
-                    }
+                    scanHandler.startScan(
+                        context = context,
+                        skip = audioDataUseCases.databaseExist(context))
                 } catch (e: Exception) {
                     Log.e(TAG, "Scan autio data failed, ${e.message}")
-                    false
                 }
             }
         }

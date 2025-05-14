@@ -39,6 +39,10 @@ fun HomeScreen(
     val coroutineScope = rememberCoroutineScope()
 
     val pagerState = rememberPagerState(pageCount = { 3 })
+    val pageAlbums = "albums"
+    val pageArtists = "artists"
+    val pageQueue = "queue"
+    val pageRoutes = listOf(pageAlbums, pageArtists, pageQueue) // map page indices to routes
     val tabTitles = listOf("Albums", "Artist", "Queue")
 
     Scaffold (
@@ -75,14 +79,14 @@ fun HomeScreen(
                 top = contentPadding.calculateTopPadding(),
                 bottom = bottomSheetViewModel.dynamicBottomPadding())
         ) { page ->
-            when (page) {
-                0 -> {
+            when (pageRoutes[page]) {
+                pageAlbums -> {
                     AlbumGridPage(navController)
                 }
-                1 -> {
+                pageArtists -> {
                     ArtistsListPage(navController)
                 }
-                2 -> {
+                pageQueue -> {
                     QueuePage(navController)
                 }
                 else -> {

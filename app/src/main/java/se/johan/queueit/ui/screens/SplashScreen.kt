@@ -19,18 +19,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import se.johan.queueit.R
 import se.johan.queueit.ui.screens.components.CheckPermissions
+import se.johan.queueit.ui.screens.components.TextFlowLeftToRight
 import se.johan.queueit.viewmodel.SplashViewModel
 
 @Composable
@@ -46,12 +51,13 @@ fun SplashScreen(
         snackbarHost = @Composable { SnackbarHost(snackbarHostState) }
     ){ contentPadding ->
         // Observe permission state
-        //val isPermissionGranted by splashViewModel.isPermissionGranted
         val isPermissionGranted = splashViewModel.isPermissionGranted.collectAsState().value
 
         // Observe if scan is required
-        //val requireScan by splashViewModel.requireScan
-        val successfulStartup = splashViewModel.successfulStartup.collectAsState().value
+        val successfulStartup = splashViewModel.successfulScan.collectAsState().value
+
+        // Observe when an artist has been detected during scan
+        val artistsDetected = splashViewModel.artistsDetected.collectAsState().value
 
         CheckPermissions(viewModel = splashViewModel)
 
@@ -88,6 +94,16 @@ fun SplashScreen(
                 )
             }
 
+            TextFlowLeftToRight(artistsDetected)
+
+//            Text(
+//                text = artistDetected,
+//                fontSize = 16.sp,
+//                color = Color.White,
+//                maxLines = 1,
+//                overflow = TextOverflow.Ellipsis
+//            )
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -104,11 +120,15 @@ fun SplashScreen(
 @Composable
 fun StartLottieAnimation() {
     val composition by rememberLottieComposition(LottieCompositionSpec.Asset("splash.json"))
-    val progress by animateLottieCompositionAsState(composition)
+    val progress by animateLottieCompositionAsState(
+        composition,
+        iterations = LottieConstants.IterateForever,
+        isPlaying = true,
+    )
 
     LottieAnimation(
         composition = composition,
         progress = { progress },
-        modifier = Modifier.size(200.dp).testTag(stringResource(R.string.splash_animation_tag))
+        modifier = Modifier.size(400.dp).testTag(stringResource(R.string.splash_animation_tag))
     )
 }
