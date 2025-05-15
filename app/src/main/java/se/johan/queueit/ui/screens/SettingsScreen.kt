@@ -68,7 +68,7 @@ fun SettingsScreen(
                     .pointerInput(Unit) {
                         detectHorizontalDragGestures { _, dragAmount ->
                             offsetX += dragAmount
-                            if (offsetX < -swipeThreshold) {
+                            if (!pendingScan && offsetX < -swipeThreshold) {
                                 navController.popBackStack()
                             }
                         }

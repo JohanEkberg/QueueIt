@@ -6,6 +6,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -18,6 +19,7 @@ import se.johan.queueit.di.AppModule
 import se.johan.queueit.ui.navigation.QueueItNavGraph
 import se.johan.queueit.ui.screens.components.TopToolbar
 import se.johan.queueit.ui.theme.QueueItTheme
+import se.johan.queueit.viewmodel.SharedSearchViewModel
 
 @HiltAndroidTest
 @UninstallModules(AppModule::class)
@@ -34,7 +36,8 @@ class SplashAnimationTest {
     fun setUp() {
         hiltRule.inject()
         composeRule.activity.setContent {
-           QueueItTheme {
+            val sharedSearchViewModel: SharedSearchViewModel = hiltViewModel()
+            QueueItTheme {
                // Create an instance of the navigation controller,
                val navController = rememberNavController()
                Scaffold(
@@ -44,9 +47,9 @@ class SplashAnimationTest {
                        TopToolbar(navController)
                    }
                ) { innerPadding ->
-                   QueueItNavGraph(navController, innerPadding)
+                   QueueItNavGraph(navController, innerPadding, sharedSearchViewModel)
                }
-           }
+            }
         }
     }
 
