@@ -2,7 +2,9 @@ package se.johan.queueit.ui.screens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
@@ -73,7 +75,7 @@ fun SplashScreen(
         val error = stringResource(R.string.splash_error_message)
         LaunchedEffect(isPermissionGranted, successfulStartup) {
             if (isPermissionGranted && successfulStartup == true) {
-                navController.navigate(HomeScreenIdentifier)
+                navController.navigate(AppScreens.HomeScreenIdentifier)
             } else if (isPermissionGranted && successfulStartup == false) {
                 errorMessage = error
             } else if (!isPermissionGranted && successfulStartup != null) {
@@ -93,9 +95,6 @@ fun SplashScreen(
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
-
-            TextFlowLeftToRight(artistsDetected)
-
 //            Text(
 //                text = artistDetected,
 //                fontSize = 16.sp,
@@ -110,7 +109,12 @@ fun SplashScreen(
                     .padding(contentPadding),
                 contentAlignment = Alignment.Center
             ) {
-                StartLottieAnimation()
+                Column {
+                    TextFlowLeftToRight(artistsDetected)
+                    Spacer(modifier = Modifier.height(30.dp))
+                    StartLottieAnimation()
+                }
+
             }
         }
 

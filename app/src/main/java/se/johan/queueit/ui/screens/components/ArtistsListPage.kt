@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
-import se.johan.queueit.ui.screens.ArtistScreenIdentifier
+import se.johan.queueit.ui.screens.AppScreens
 import se.johan.queueit.viewmodel.ArtistsPageViewModel
 
 @Composable
@@ -47,7 +47,7 @@ fun ArtistsListPage(navController: NavController, artistsViewModel: ArtistsPageV
                         artist = artistItem.artistEntity.artistName ?: "",
                         numberOfAlbums = artistsViewModel.getNumberOfAlbums(artistItem.songList),
                         modifier = Modifier.clickable {
-                            navController.navigate(ArtistScreenIdentifier(artistItem.artistEntity.artistId))
+                            navController.navigate(AppScreens.ArtistScreenIdentifier(artistItem.artistEntity.artistId))
                         },
                         itemSize = artistsViewModel.getItemSize(LocalConfiguration.current.screenWidthDp)
                     )

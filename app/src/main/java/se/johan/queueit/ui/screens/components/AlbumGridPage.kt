@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
-import se.johan.queueit.ui.screens.AlbumScreenIdentifier
+import se.johan.queueit.ui.screens.AppScreens
 import se.johan.queueit.viewmodel.AlbumsPageViewModel
 
 @Composable
@@ -50,7 +50,7 @@ fun AlbumGridPage(navController: NavController, albumsViewModel: AlbumsPageViewM
                         nbrOfSongs = albumItem.songList.size.toString(),
                         artWork = albumArt,
                         modifier = Modifier.clickable {
-                            navController.navigate(AlbumScreenIdentifier(albumItem.albumEntity.albumId))
+                            navController.navigate(AppScreens.AlbumScreenIdentifier(albumItem.albumEntity.albumId))
                         },
                         itemSize = albumsViewModel.getItemSize(LocalConfiguration.current.screenWidthDp)
                     )

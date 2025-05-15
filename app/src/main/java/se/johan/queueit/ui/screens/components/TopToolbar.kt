@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import se.johan.queueit.R
-import se.johan.queueit.ui.screens.SettingsScreenIdentifier
+import se.johan.queueit.ui.screens.AppScreens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,7 +31,9 @@ fun TopToolbar(
     TopAppBar(
         title = { Text(stringResource(R.string.app_name), color = Color.White) },
         actions = {
-            IconButton(onClick = { }) {
+            IconButton(onClick = {
+                navController.navigate(AppScreens.SearchScreenIdentifier)
+            }) {
                 Icon(
                     Icons.Default.Search,
                     contentDescription = "Search",
@@ -55,7 +57,7 @@ fun TopToolbar(
                     text = { Text(stringResource(R.string.menu_settings)) },
                     onClick = {
                         showMenu = false
-                        navController.navigate(SettingsScreenIdentifier)
+                        navController.navigate(AppScreens.SettingsScreenIdentifier)
                     }
                 )
             }

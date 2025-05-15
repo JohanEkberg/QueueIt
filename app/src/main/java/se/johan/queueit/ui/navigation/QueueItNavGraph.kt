@@ -8,42 +8,49 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import se.johan.queueit.ui.screens.AlbumScreen
-import se.johan.queueit.ui.screens.AlbumScreenIdentifier
+import se.johan.queueit.ui.screens.AppScreens
 import se.johan.queueit.ui.screens.ArtistScreen
-import se.johan.queueit.ui.screens.ArtistScreenIdentifier
 import se.johan.queueit.ui.screens.HomeScreen
-import se.johan.queueit.ui.screens.HomeScreenIdentifier
+import se.johan.queueit.ui.screens.SearchScreen
 import se.johan.queueit.ui.screens.SettingsScreen
-import se.johan.queueit.ui.screens.SettingsScreenIdentifier
 import se.johan.queueit.ui.screens.SplashScreen
-import se.johan.queueit.ui.screens.SplashScreenIdentifier
+import se.johan.queueit.viewmodel.SharedSearchViewModel
 
 @Composable
-fun QueueItNavGraph(navController: NavHostController, innerPadding: PaddingValues) {
+fun QueueItNavGraph(
+    navController: NavHostController,
+    innerPadding: PaddingValues,
+    sharedSearchViewModel: SharedSearchViewModel
+) {
     NavHost(
         navController = navController,
         modifier = Modifier.padding(innerPadding),
-        startDestination = SplashScreenIdentifier
+        startDestination = AppScreens.SplashScreenIdentifier
     ) {
         // Map splash screen identifier with the splash screen
-        composable<SplashScreenIdentifier> {
+        composable<AppScreens.SplashScreenIdentifier> {
             SplashScreen(navController)
         }
         // Map home screen identifier with the home screen
-        composable<HomeScreenIdentifier> {
+        composable<AppScreens.HomeScreenIdentifier> {
             HomeScreen(navController)
         }
         // Map album screen identifier with the album screen
-        composable<AlbumScreenIdentifier> {
+        composable<AppScreens.AlbumScreenIdentifier> {
             AlbumScreen(navController)
         }
         // Map artist screen identifier with the artist screen
-        composable<ArtistScreenIdentifier> {
+        composable<AppScreens.ArtistScreenIdentifier> {
             ArtistScreen(navController)
         }
         // Map settings screen identifier with the settings screen
-        composable<SettingsScreenIdentifier> {
+        composable<AppScreens.SettingsScreenIdentifier> {
             SettingsScreen(navController)
+        }
+
+        // Map search screen identifier with the search screen
+        composable<AppScreens.SearchScreenIdentifier> {
+            SearchScreen(navController, sharedSearchViewModel)
         }
     }
 }

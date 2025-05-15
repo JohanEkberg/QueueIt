@@ -1,6 +1,7 @@
 package se.johan.queueit
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -10,26 +11,24 @@ import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import se.johan.queueit.ui.navigation.QueueItNavGraph
-import se.johan.queueit.ui.screens.SettingsScreenIdentifier
-import se.johan.queueit.ui.screens.components.Player
+import se.johan.queueit.ui.navigation.resolveScreen
+import se.johan.queueit.ui.screens.AppScreens
+import se.johan.queueit.ui.screens.components.SearchToolbar
 import se.johan.queueit.ui.screens.components.TopToolbar
 import se.johan.queueit.ui.theme.QueueItTheme
 import se.johan.queueit.viewmodel.BottomSheetViewModel
+import se.johan.queueit.viewmodel.SharedSearchViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -40,9 +39,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             QueueItTheme {
 
+                // Instantiate the BottomSheetViewModel i.e. bottom player.
                 val bottomSheetViewModel: BottomSheetViewModel = hiltViewModel()
                 val sheetContent = bottomSheetViewModel.content
-
 
                 val sheetState = rememberBottomSheetScaffoldState(
                     bottomSheetState = rememberStandardBottomSheetState(
@@ -50,7 +49,6 @@ class MainActivity : ComponentActivity() {
                         skipHiddenState = false // allow the sheet to animate to 'Hidden'
                     )
                 )
-                //val isSongInQueue by remember { mutableStateOf(false) }
 
                 LaunchedEffect(sheetContent) {
                     if (sheetContent != null) {
@@ -60,16 +58,27 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                // Create an instance of the navigation controller,
+                // The search view model is shared between the searchToolbar and the searchScreen,
+                // hence we instantiate it here.
+                val sharedSearchViewModel: SharedSearchViewModel = hiltViewModel()
+
+                // Create an instance of the navigation controller and get the current which we need
+                // to check if it's the SearchToolbar that should be visible.
                 val navController = rememberNavController()
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentRoute = navBackStackEntry?.destination?.route
+                val currentScreen = resolveScreen(currentRoute)
+                Log.i(TAG, "Destination: ${currentRoute} ${currentScreen}")
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     // We want te be able to open the settings screen from the menu
                     topBar = {
-                        TopToolbar(navController)
+                        when (currentScreen) {
+                            AppScreens.SearchScreenIdentifier -> SearchToolbar(navController, sharedSearchViewModel)
+                            else -> TopToolbar(navController)
+                        }
                     }
                 ) { innerPadding ->
-
                     BottomSheetScaffold(
                         scaffoldState = sheetState,
                         sheetPeekHeight = if (sheetContent != null) 64.dp else 0.dp,
@@ -80,7 +89,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     ) {
-                        QueueItNavGraph(navController, innerPadding)
+                        QueueItNavGraph(navController, innerPadding, sharedSearchViewModel)
                     }
                 }
             }

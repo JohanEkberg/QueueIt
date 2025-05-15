@@ -50,12 +50,11 @@ fun SettingsScreen(
 
     Scaffold { contentPadding ->
         if (successfulScan == true) {
-            // navController.navigate(HomeScreenIdentifier)
+            navController.navigate(AppScreens.HomeScreenIdentifier)
         }
 
         val swipeThreshold = 100f
         var offsetX by remember { mutableStateOf(0f) }
-
 
         Box(
             modifier = Modifier

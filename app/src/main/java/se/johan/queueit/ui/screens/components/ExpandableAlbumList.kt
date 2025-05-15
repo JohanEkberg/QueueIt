@@ -43,7 +43,7 @@ import se.johan.queueit.mediastore.util.getDefaultArtWork
 import se.johan.queueit.mediastore.util.getFormattedDurationTime
 import se.johan.queueit.model.database.AlbumEntity
 import se.johan.queueit.model.database.SongWithArtist
-import se.johan.queueit.ui.screens.HomeScreenIdentifier
+import se.johan.queueit.ui.screens.AppScreens
 import se.johan.queueit.util.adjustForWhiteText
 import se.johan.queueit.util.getDominantColor
 import se.johan.queueit.viewmodel.AlbumUiModel
@@ -92,7 +92,7 @@ fun ExpandableAlbumList(
                         detectHorizontalDragGestures { _, dragAmount ->
                             offsetX += dragAmount
                             if (offsetX < -swipeThreshold) {
-                                navController.navigate(HomeScreenIdentifier) {
+                                navController.navigate(AppScreens.HomeScreenIdentifier) {
                                     popUpTo(0) { inclusive = true }
                                     launchSingleTop = true
                                 }
