@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,8 +26,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import se.johan.queueit.R
+import se.johan.queueit.model.database.ArtistEntity
+import se.johan.queueit.model.database.SongWithArtist
 import se.johan.queueit.viewmodel.SharedSearchViewModel
 
 @Composable
@@ -142,8 +147,27 @@ fun SearchScreen(
                 }
             } }
             items(songs) { song ->
-                Text(text = song.songName ?: "", color = Color.Black)
-                Spacer(modifier = Modifier.height(4.dp))
+                Row(modifier = Modifier
+                    .padding(4.dp)
+                    .fillMaxWidth()
+                    .clickable {
+                        sharedSearchViewModel.addTrackToQueue(
+                            SongWithArtist(
+                                songEntity = song,
+                                ArtistEntity(artistId = song.songArtistId ?: 0, artistName = "")
+                            )
+                        )
+                    }
+                ) {
+                    Text(text = song.songName ?: "", color = Color.Black)
+                    Spacer(modifier = Modifier.weight(1f)) // Pushes the icon to the right
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_add_to_queue),
+                        contentDescription = "Add to Queue",
+                        modifier = Modifier.size(24.dp),
+                        tint = Color.Black // show original icon colors
+                    )
+                }
             }
         }
     }

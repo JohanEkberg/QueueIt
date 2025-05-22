@@ -1,6 +1,5 @@
 package se.johan.queueit.ui.screens.components
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
