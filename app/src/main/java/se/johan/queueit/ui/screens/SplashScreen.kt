@@ -21,13 +21,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.LottieAnimation
@@ -37,7 +34,9 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import se.johan.queueit.R
 import se.johan.queueit.ui.screens.components.CheckPermissions
-import se.johan.queueit.ui.screens.components.TextFlowLeftToRight
+import se.johan.queueit.ui.screens.components.TextFlowRightToLeft
+import se.johan.queueit.ui.theme.Gray600
+import se.johan.queueit.ui.theme.Gray800
 import se.johan.queueit.viewmodel.SplashViewModel
 
 @Composable
@@ -95,13 +94,6 @@ fun SplashScreen(
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
-//            Text(
-//                text = artistDetected,
-//                fontSize = 16.sp,
-//                color = Color.White,
-//                maxLines = 1,
-//                overflow = TextOverflow.Ellipsis
-//            )
 
             Box(
                 modifier = Modifier
@@ -109,12 +101,17 @@ fun SplashScreen(
                     .padding(contentPadding),
                 contentAlignment = Alignment.Center
             ) {
-                Column {
-                    TextFlowLeftToRight(artistsDetected)
+                Column (horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = stringResource(R.string.splash_scanning_message),
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = Gray600
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    TextFlowRightToLeft(artistsDetected)
                     Spacer(modifier = Modifier.height(30.dp))
                     StartLottieAnimation()
                 }
-
             }
         }
 

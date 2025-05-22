@@ -30,8 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import se.johan.queueit.R
-import se.johan.queueit.ui.screens.components.TextFlowLeftToRight
-import se.johan.queueit.ui.theme.blue100
+import se.johan.queueit.ui.screens.components.TextFlowRightToLeft
 import se.johan.queueit.ui.theme.blue250
 import se.johan.queueit.ui.theme.blue80
 import se.johan.queueit.viewmodel.SettingsViewModel
@@ -77,7 +76,7 @@ fun SettingsScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.weight(1f))
-                TextFlowLeftToRight(artistsDetected)
+                TextFlowRightToLeft(artistsDetected)
                 Spacer(modifier = Modifier.height(300.dp))
 
                 Button(

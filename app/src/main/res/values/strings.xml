@@ -4,6 +4,7 @@
     <!-- Splash screen text -->
     <string name="splash_animation_tag">SPLASH_ANIMATION</string>
     <string name="splash_error_message">Startup failed. Please try again.</string>
+    <string name="splash_scanning_message">Scanning audio…</string>
 
     <!-- Snackbar texts -->
     <string name="permissions_not_granted">Permissions not granted</string>

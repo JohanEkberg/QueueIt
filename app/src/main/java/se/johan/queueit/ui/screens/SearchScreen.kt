@@ -14,11 +14,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +27,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import se.johan.queueit.ui.theme.blue250
 import se.johan.queueit.viewmodel.SharedSearchViewModel
 
 @Composable
@@ -57,11 +53,18 @@ fun SearchScreen(
                         .padding(4.dp)
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(10.dp))
-                        .background(blue250),
+                        .background(Color.Transparent),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Text("Artists", color = Color.White, modifier = Modifier.padding(start = 4.dp, end = 4.dp))
+                    if (artists.isNotEmpty()) {
+                        Text(
+                            "Artists",
+                            color = Color.Black,
+                            style = MaterialTheme.typography.headlineSmall,
+                            modifier = Modifier.padding(start = 4.dp, end = 4.dp)
+                        )
+                    }
                 }
             }
             items(artists) { artist ->
@@ -88,11 +91,18 @@ fun SearchScreen(
                         .padding(4.dp)
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(10.dp))
-                        .background(blue250),
+                        .background(Color.Transparent),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Text("Albums", color = Color.White, modifier = Modifier.padding(start = 4.dp, end = 4.dp))
+                    if (albums.isNotEmpty()) {
+                        Text(
+                            "Albums",
+                            color = Color.Black,
+                            style = MaterialTheme.typography.headlineSmall,
+                            modifier = Modifier.padding(start = 4.dp, end = 4.dp)
+                        )
+                    }
                 }
             }
             items(albums) { album ->
@@ -118,11 +128,18 @@ fun SearchScreen(
                     .padding(4.dp)
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp))
-                    .background(blue250),
+                    .background(Color.Transparent),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                Text("Songs", color = Color.White, modifier = Modifier.padding(start = 4.dp, end = 4.dp))
+                if (songs.isNotEmpty()) {
+                    Text(
+                        "Songs",
+                        color = Color.Black,
+                        style = MaterialTheme.typography.headlineSmall,
+                        modifier = Modifier.padding(start = 4.dp, end = 4.dp)
+                    )
+                }
             } }
             items(songs) { song ->
                 Text(text = song.songName ?: "", color = Color.Black)
