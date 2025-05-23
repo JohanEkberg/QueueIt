@@ -8,6 +8,7 @@ import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -48,6 +49,7 @@ import se.johan.queueit.util.adjustForWhiteText
 import se.johan.queueit.util.getDominantColor
 import se.johan.queueit.viewmodel.AlbumUiModel
 import se.johan.queueit.viewmodel.BottomSheetViewModel
+import se.johan.queueit.viewmodel.dynamicBottomPadding
 
 @Composable
 fun ExpandableAlbumList(
@@ -78,7 +80,10 @@ fun ExpandableAlbumList(
     val swipeThreshold = 100f
     var offsetX by remember { mutableStateOf(0f) }
 
-    LazyColumn {
+    LazyColumn ( modifier = Modifier
+        .fillMaxSize()
+        .padding(bottom = bottomSheetViewModel.dynamicBottomPadding())
+    ) {
         items(albumsFromArtist.size) { index ->
             val albumUiModel = albumsFromArtist[index]
             val color = dominantColors[albumUiModel.album]?.second ?: MaterialTheme.colorScheme.primary

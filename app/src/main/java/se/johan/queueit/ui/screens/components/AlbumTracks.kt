@@ -36,14 +36,14 @@ fun AlbumTracks(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.primary)
                     .clickable {
-                    onTrackClick(it)
+                        onTrackClick(it)
 
-                    // Show player
-                    if (!bottomSheetViewModel.isVisible) {
-                        bottomSheetViewModel.show(context = context) {
-                            Player()
+                        // Show player
+                        if (!bottomSheetViewModel.isVisible) {
+                            bottomSheetViewModel.show(context = context) {
+                                Player()
+                            }
                         }
-                    }
                 }
             ) }
         }

@@ -55,7 +55,7 @@ fun TextFlowRightToLeft(messages: List<String>) {
                     Text(
                         text = "${msg.trim()} :",
                         color = Gray800,
-                        style = MaterialTheme.typography.headlineLarge
+                        style = MaterialTheme.typography.labelMedium
                     )
                 }
             }

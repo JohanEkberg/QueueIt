@@ -1,5 +1,6 @@
 package se.johan.queueit.ui.screens.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import se.johan.queueit.ui.screens.AppScreens
+import se.johan.queueit.ui.theme.blue50
 import se.johan.queueit.viewmodel.AlbumsPageViewModel
 
 @Composable
@@ -33,7 +35,7 @@ fun AlbumGridPage(navController: NavController, albumsViewModel: AlbumsPageViewM
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(4.dp), // optional
+            .padding(4.dp),
         verticalArrangement = Arrangement.Top
     ) {
         LazyVerticalGrid(

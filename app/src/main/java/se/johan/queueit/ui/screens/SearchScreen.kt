@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,28 +21,49 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigation.NavController
 import se.johan.queueit.R
-import se.johan.queueit.model.database.ArtistEntity
-import se.johan.queueit.model.database.SongWithArtist
+import se.johan.queueit.ui.screens.components.Player
+import se.johan.queueit.viewmodel.BottomSheetViewModel
 import se.johan.queueit.viewmodel.SharedSearchViewModel
+import se.johan.queueit.viewmodel.dynamicBottomPadding
 
 @Composable
 fun SearchScreen(
     navController: NavController,
-    sharedSearchViewModel: SharedSearchViewModel
+    sharedSearchViewModel: SharedSearchViewModel,
+    bottomSheetViewModel: BottomSheetViewModel = hiltViewModel(LocalContext.current as ViewModelStoreOwner)
 ) {
+    val context = LocalContext.current
+
     val artists by sharedSearchViewModel.artists.collectAsState()
     val albums by sharedSearchViewModel.albums.collectAsState()
     val songs by sharedSearchViewModel.songs.collectAsState()
+
+    LaunchedEffect(Unit) {
+        sharedSearchViewModel.songWithArtist.collect { songWithArtist ->
+            sharedSearchViewModel.addTrackToQueue(songWithArtist)
+
+            if (!bottomSheetViewModel.isVisible) {
+                bottomSheetViewModel.show(context = context) {
+                    Player()
+                }
+            }
+        }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -49,7 +71,10 @@ fun SearchScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = contentPadding.calculateBottomPadding()),
+                .padding(
+                    top = contentPadding.calculateTopPadding(),
+                    bottom = bottomSheetViewModel.dynamicBottomPadding()
+                ),
             verticalArrangement = Arrangement.Top
         ) {
             item {
@@ -80,7 +105,13 @@ fun SearchScreen(
                         navController.navigate(AppScreens.ArtistScreenIdentifier(artistId = artist.artistId))
                     }
                 ) {
-                    Text(text = artist.artistName ?: "", color = Color.Black)
+                    Text(
+                        text = artist.artistName ?: "",
+                        color = Color.Black,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.widthIn(max = 250.dp)
+                    )
                     Spacer(modifier = Modifier.weight(1f)) // Pushes the icon to the right
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
@@ -118,7 +149,13 @@ fun SearchScreen(
                         navController.navigate(AppScreens.AlbumScreenIdentifier(albumId = album.albumId))
                     }
                 ) {
-                    Text(text = album.albumName ?: "", color = Color.Black)
+                    Text(
+                        text = album.albumName ?: "",
+                        color = Color.Black,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.widthIn(max = 250.dp)
+                    )
                     Spacer(modifier = Modifier.weight(1f)) // Pushes the icon to the right
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
@@ -151,15 +188,16 @@ fun SearchScreen(
                     .padding(4.dp)
                     .fillMaxWidth()
                     .clickable {
-                        sharedSearchViewModel.addTrackToQueue(
-                            SongWithArtist(
-                                songEntity = song,
-                                ArtistEntity(artistId = song.songArtistId ?: 0, artistName = "")
-                            )
-                        )
+                        sharedSearchViewModel.onSongClicked(song)
                     }
                 ) {
-                    Text(text = song.songName ?: "", color = Color.Black)
+                    Text(
+                        text = song.songName ?: "",
+                        color = Color.Black,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.widthIn(max = 300.dp)
+                    )
                     Spacer(modifier = Modifier.weight(1f)) // Pushes the icon to the right
                     Icon(
                         painter = painterResource(id = R.drawable.ic_add_to_queue),

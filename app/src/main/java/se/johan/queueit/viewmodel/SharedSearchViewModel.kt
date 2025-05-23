@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import se.johan.queueit.TAG
@@ -35,6 +37,9 @@ class SharedSearchViewModel @Inject constructor (
     private val _songs = MutableStateFlow<List<SongEntity>>(emptyList())
     val songs: StateFlow<List<SongEntity>> = _songs
 
+    private val _songWithArtist = Channel<SongWithArtist>()
+    val songWithArtist = _songWithArtist.receiveAsFlow()
+
     fun doSearch(searchString: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -43,7 +48,26 @@ class SharedSearchViewModel @Inject constructor (
                     _albums.value = audioDataUseCases.getAlbumByName("$searchString%")
                     _songs.value = audioDataUseCases.getSongByName("$searchString%")
                 } catch (e: Exception) {
-                    Log.e(TAG, "Failed to get artists, exception ${e.message}")
+                    Log.e(TAG, "Failed to get artists, albums and songs, exception ${e.message}")
+                }
+            }
+        }
+    }
+
+    fun onSongClicked(song: SongEntity) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                try {
+                    val artist = audioDataUseCases.getArtistById(song.songArtistId?.toInt() ?: 0)
+                    val artistEntity = ArtistEntity(
+                        artistId = artist.artistId,
+                        artistName = artist.artistName ?: ""
+                    )
+                    _songWithArtist.send(
+                        SongWithArtist(songEntity = song, artist = artistEntity)
+                    )
+                } catch(e: Exception) {
+                    Log.e(TAG, "Failed to get artist, exception ${e.message}")
                 }
             }
         }
