@@ -1,6 +1,5 @@
 package se.johan.queueit.ui.screens.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,6 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,18 +19,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import se.johan.queueit.ui.screens.AppScreens
-import se.johan.queueit.ui.theme.blue50
 import se.johan.queueit.viewmodel.AlbumsPageViewModel
 
 @Composable
-fun AlbumGridPage(navController: NavController, albumsViewModel: AlbumsPageViewModel = hiltViewModel()) {
+fun AlbumGridPage(navController: NavController, gridState: LazyGridState, albumsViewModel: AlbumsPageViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val albums = albumsViewModel.albums.collectAsLazyPagingItems()
-
-    // Trigger data fetch when the composable is first launched
-    LaunchedEffect(Unit) {
-        albumsViewModel.getAlbums()
-    }
 
     Column(
         modifier = Modifier
@@ -40,6 +34,7 @@ fun AlbumGridPage(navController: NavController, albumsViewModel: AlbumsPageViewM
     ) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
+            state = gridState,
             contentPadding = PaddingValues(bottom = 0.dp)
         ) {
             items(albums.itemCount) { index ->

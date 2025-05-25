@@ -23,24 +23,12 @@ import javax.inject.Inject
 class ArtistsPageViewModel @Inject constructor (
     private val audioDataUseCases: AudioDataUseCases
 ) : ViewModel() {
-    private val _artists = MutableStateFlow<PagingData<ArtistWithSongs>>(PagingData.empty())
-    val artists: StateFlow<PagingData<ArtistWithSongs>> = _artists
 
-    fun getArtists() {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                try {
-                    audioDataUseCases.getPagedArtistWithSongs()
-                        .cachedIn(this) // still cache paging flow inside this coroutine
-                        .collect { pagingData ->
-                            _artists.value = pagingData
-                        }
-                } catch(e: Exception) {
-                    Log.e(TAG, "Failed to get albums, exception: ${e.message}")
-                }
-            }
-        }
-    }
+    // Automatically starts collecting and caching PagingData
+    val artists = audioDataUseCases
+        .getPagedArtistWithSongs()
+        .cachedIn(viewModelScope)
+
 
     fun getNumberOfAlbums(listOfSongs: List<SongEntity>) : String {
         return try {

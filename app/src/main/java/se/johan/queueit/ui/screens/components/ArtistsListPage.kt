@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -21,14 +22,9 @@ import se.johan.queueit.ui.screens.AppScreens
 import se.johan.queueit.viewmodel.ArtistsPageViewModel
 
 @Composable
-fun ArtistsListPage(navController: NavController, artistsViewModel: ArtistsPageViewModel = hiltViewModel()) {
+fun ArtistsListPage(navController: NavController, listState: LazyListState, artistsViewModel: ArtistsPageViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val artists = artistsViewModel.artists.collectAsLazyPagingItems()
-
-    // Trigger data fetch when the composable is first launched
-    LaunchedEffect(Unit) {
-        artistsViewModel.getArtists()
-    }
 
     Column(
         modifier = Modifier
@@ -36,7 +32,7 @@ fun ArtistsListPage(navController: NavController, artistsViewModel: ArtistsPageV
             .padding(4.dp), // optional
         verticalArrangement = Arrangement.Top
     ) {
-        LazyColumn {
+        LazyColumn(state = listState) {
             items(artists.itemCount) { index ->
                 val artistItem =  artists[index]
 

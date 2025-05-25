@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,11 +23,12 @@ import se.johan.queueit.mediastore.util.getDefaultArtWork
 import se.johan.queueit.viewmodel.QueuePageViewModel
 
 @Composable
-fun QueuePage(navController: NavController, queuePageViewModel: QueuePageViewModel = hiltViewModel()) {
+fun QueuePage(navController: NavController, listState: LazyListState, queuePageViewModel: QueuePageViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val queueItems by queuePageViewModel.queueItems.collectAsState()
 
     // Trigger data fetch when the composable is first launched
+    // TODO: Remove this and use Flow and observe changes to the queue instead.
     LaunchedEffect(Unit) {
         queuePageViewModel.getQueueItems()
     }
@@ -37,7 +39,7 @@ fun QueuePage(navController: NavController, queuePageViewModel: QueuePageViewMod
             .padding(4.dp),
         verticalArrangement = Arrangement.Top
     ) {
-        LazyColumn {
+        LazyColumn(state = listState) {
             items(queueItems) { queueItem ->
                 val artWork = queueItem.albumUri?.let {
                     produceBitmap(context, queueItem.albumUri)

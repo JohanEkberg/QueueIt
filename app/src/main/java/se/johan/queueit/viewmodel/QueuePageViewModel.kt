@@ -1,6 +1,5 @@
 package se.johan.queueit.viewmodel
 
-import android.net.Uri
 import android.util.Log
 import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.ViewModel
@@ -10,7 +9,6 @@ import kotlinx.coroutines.flow.StateFlow
 import se.johan.queueit.TAG
 import se.johan.queueit.audio.data.AudioFileMetaData
 import se.johan.queueit.audio.queue.SongQueueUseCases
-import se.johan.queueit.model.database.SongWithArtist
 import se.johan.queueit.util.calculateListImageSize
 import javax.inject.Inject
 
@@ -36,7 +34,7 @@ class QueuePageViewModel @Inject constructor (
     private fun removeItemFromQueue(song: AudioFileMetaData) {
         try {
             songQueueUseCases.removeQueueItem(song)
-            getQueueItems()
+            //getQueueItems()
         } catch(e: Exception) {
             Log.e(TAG, "Failed to remove song from queue, exception ${e.message}")
         }

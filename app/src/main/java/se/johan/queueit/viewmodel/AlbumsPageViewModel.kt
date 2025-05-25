@@ -22,25 +22,11 @@ import javax.inject.Inject
 class AlbumsPageViewModel @Inject constructor (
     private val audioDataUseCases: AudioDataUseCases
 ) : ViewModel() {
-    // Backing field with MutableStateFlow
-    private val _albums = MutableStateFlow<PagingData<AlbumWithSongs>>(PagingData.empty())
-    val albums: StateFlow<PagingData<AlbumWithSongs>> = _albums
 
-    fun getAlbums() {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                try {
-                    audioDataUseCases.getPagedAlbumWithSong()
-                        .cachedIn(this) // still cache paging flow inside this coroutine
-                        .collect { pagingData ->
-                            _albums.value = pagingData
-                        }
-                } catch(e: Exception) {
-                    Log.e(TAG, "Failed to get albums, exception: ${e.message}")
-                }
-            }
-        }
-    }
+    // Automatically starts collecting and caching PagingData
+    val albums = audioDataUseCases
+        .getPagedAlbumWithSong()
+        .cachedIn(viewModelScope)
 
     fun getItemSize(screenWidthDp: Int): Dp = calculateGridImageSize(screenWidthDp)
 }

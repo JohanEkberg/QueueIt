@@ -2,6 +2,8 @@ package se.johan.queueit.ui.screens
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Scaffold
@@ -11,7 +13,9 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -38,7 +42,17 @@ fun HomeScreen(
 
     val coroutineScope = rememberCoroutineScope()
 
-    val pagerState = rememberPagerState(pageCount = { 3 })
+    val pageCount = 3
+    val pagerState = rememberPagerState(pageCount = { pageCount })
+    val listStateArtists = rememberSaveable(saver = LazyListState.Saver) {
+        LazyListState()
+    }
+    val gridStateAlbums = rememberSaveable(saver = LazyGridState.Saver) {
+        LazyGridState()
+    }
+    val listStateQueue = rememberSaveable(saver = LazyListState.Saver) {
+        LazyListState()
+    }
     val pageAlbums = "albums"
     val pageArtists = "artists"
     val pageQueue = "queue"
@@ -53,7 +67,7 @@ fun HomeScreen(
                     TabRowDefaults.SecondaryIndicator(
                         modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
                         color = indicatorColor,
-                        height = 3.dp // Optional: Customize height
+                        height = 3.dp
                     )
                 }
             ) {
@@ -81,13 +95,13 @@ fun HomeScreen(
         ) { page ->
             when (pageRoutes[page]) {
                 pageAlbums -> {
-                    AlbumGridPage(navController)
+                    AlbumGridPage(navController, gridStateAlbums)
                 }
                 pageArtists -> {
-                    ArtistsListPage(navController)
+                    ArtistsListPage(navController, listStateArtists)
                 }
                 pageQueue -> {
-                    QueuePage(navController)
+                    QueuePage(navController, listStateQueue)
                 }
                 else -> {
                     Text("Test page: $page", Modifier.fillMaxSize())
