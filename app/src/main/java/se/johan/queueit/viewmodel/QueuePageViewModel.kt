@@ -34,7 +34,7 @@ class QueuePageViewModel @Inject constructor (
     private fun removeItemFromQueue(song: AudioFileMetaData) {
         try {
             songQueueUseCases.removeQueueItem(song)
-            //getQueueItems()
+            getQueueItems()
         } catch(e: Exception) {
             Log.e(TAG, "Failed to remove song from queue, exception ${e.message}")
         }
