@@ -22,9 +22,11 @@ import se.johan.queueit.audio.queue.GetQueueItem
 import se.johan.queueit.audio.queue.GetQueueItems
 import se.johan.queueit.audio.queue.IsEmpty
 import se.johan.queueit.audio.queue.IsEqual
+import se.johan.queueit.audio.queue.ObserveQueue
 import se.johan.queueit.audio.queue.PeekQueue
 import se.johan.queueit.audio.queue.QueueSize
 import se.johan.queueit.audio.queue.RemoveQueueItem
+import se.johan.queueit.audio.queue.SongQueueRepository
 import se.johan.queueit.audio.queue.SongQueueUseCases
 import se.johan.queueit.mediastore.usecases.AudioScannerUseCases
 import se.johan.queueit.mediastore.usecases.StartScan
@@ -100,20 +102,44 @@ object TestAppModule {
 
     @Provides
     @Singleton
-    fun provideSongQueue(): SongQueueUseCases {
-        val queue: Queue<AudioFileMetaData> = LinkedList()
+    fun provideSongQueueRepository(): SongQueueRepository {
+        return SongQueueRepository()
+    }
+
+    @Provides
+    @Singleton
+    fun provideSongQueueUseCases(songQueueRepository: SongQueueRepository): SongQueueUseCases {
         return SongQueueUseCases(
-            addQueueItem = AddQueueItem(queue),
-            clearQueue = ClearQueue(queue),
-            getQueueItem = GetQueueItem(queue),
-            getQueueItems = GetQueueItems(queue),
-            isEmpty = IsEmpty(queue),
-            isEqual = IsEqual(queue),
-            queueSize = QueueSize(queue),
-            removeQueueItem = RemoveQueueItem(queue),
-            peekQueue = PeekQueue(queue)
+            addQueueItem = AddQueueItem(songQueueRepository),
+            clearQueue = ClearQueue(songQueueRepository),
+            getQueueItem = GetQueueItem(songQueueRepository),
+            getQueueItems = GetQueueItems(songQueueRepository),
+            isEmpty = IsEmpty(songQueueRepository),
+            isEqual = IsEqual(songQueueRepository),
+            queueSize = QueueSize(songQueueRepository),
+            removeQueueItem = RemoveQueueItem(songQueueRepository),
+            peekQueue = PeekQueue(songQueueRepository),
+            observeQueue = ObserveQueue(songQueueRepository)
         )
     }
+
+
+//    @Provides
+//    @Singleton
+//    fun provideSongQueue(): SongQueueUseCases {
+//        val queue: Queue<AudioFileMetaData> = LinkedList()
+//        return SongQueueUseCases(
+//            addQueueItem = AddQueueItem(queue),
+//            clearQueue = ClearQueue(queue),
+//            getQueueItem = GetQueueItem(queue),
+//            getQueueItems = GetQueueItems(queue),
+//            isEmpty = IsEmpty(queue),
+//            isEqual = IsEqual(queue),
+//            queueSize = QueueSize(queue),
+//            removeQueueItem = RemoveQueueItem(queue),
+//            peekQueue = PeekQueue(queue)
+//        )
+//    }
 
     @Provides
     @Singleton

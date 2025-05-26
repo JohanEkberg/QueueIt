@@ -1,15 +1,9 @@
 package se.johan.queueit.audio.queue
 
 import se.johan.queueit.audio.data.AudioFileMetaData
-import java.util.Queue
 
-class RemoveQueueItem(private var _queue: Queue<AudioFileMetaData>) {
-    @Throws(SongQueueException::class)
+class RemoveQueueItem(private var _songQueueRepository: SongQueueRepository) {
     operator fun invoke(song: AudioFileMetaData) : Boolean {
-        return try {
-            _queue.remove(song)
-        } catch(e: Exception) {
-            throw SongQueueException("Failed to remove item from queue, exception: ${e.message}")
-        }
+        return _songQueueRepository.remove(song)
     }
 }

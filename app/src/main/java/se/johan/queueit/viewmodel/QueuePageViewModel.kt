@@ -3,9 +3,11 @@ package se.johan.queueit.viewmodel
 import android.util.Log
 import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import se.johan.queueit.TAG
 import se.johan.queueit.audio.data.AudioFileMetaData
 import se.johan.queueit.audio.queue.SongQueueUseCases
@@ -17,16 +19,13 @@ class QueuePageViewModel @Inject constructor (
     private val songQueueUseCases: SongQueueUseCases
 ) : ViewModel() {
 
-    private val _queueItems = MutableStateFlow<List<AudioFileMetaData>>(emptyList())
-    val queueItems: StateFlow<List<AudioFileMetaData>> = _queueItems
-
-    fun getQueueItems() {
-        try {
-            _queueItems.value = songQueueUseCases.getQueueItems()
-        } catch(e: Exception) {
-            Log.e(TAG, "Failed to get song queue items, exception ${e.message}")
-        }
-    }
+    val queueItems: StateFlow<List<AudioFileMetaData>> = songQueueUseCases
+        .observeQueue()
+        .stateIn(
+            viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptyList()
+        )
 
     fun getItemSize(screenWidthDp: Int): Dp = calculateListImageSize(screenWidthDp, min = 100, max = 140)
 
@@ -34,7 +33,6 @@ class QueuePageViewModel @Inject constructor (
     private fun removeItemFromQueue(song: AudioFileMetaData) {
         try {
             songQueueUseCases.removeQueueItem(song)
-            getQueueItems()
         } catch(e: Exception) {
             Log.e(TAG, "Failed to remove song from queue, exception ${e.message}")
         }

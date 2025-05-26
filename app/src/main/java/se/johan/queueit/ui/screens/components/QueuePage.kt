@@ -27,12 +27,6 @@ fun QueuePage(navController: NavController, listState: LazyListState, queuePageV
     val context = LocalContext.current
     val queueItems by queuePageViewModel.queueItems.collectAsState()
 
-    // Trigger data fetch when the composable is first launched
-    // TODO: Remove this and use Flow and observe changes to the queue instead.
-    LaunchedEffect(Unit) {
-        queuePageViewModel.getQueueItems()
-    }
-
     Column(
         modifier = Modifier
             .fillMaxSize()

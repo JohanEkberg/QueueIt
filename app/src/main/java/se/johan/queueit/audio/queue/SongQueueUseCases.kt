@@ -9,7 +9,8 @@ data class SongQueueUseCases (
     val queueSize: QueueSize,
     val isEmpty: IsEmpty,
     val isEqual: IsEqual,
-    val peekQueue: PeekQueue
+    val peekQueue: PeekQueue,
+    val observeQueue: ObserveQueue
 )
 class SongQueueException(
     message: String = "",
