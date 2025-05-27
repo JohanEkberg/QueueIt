@@ -19,7 +19,6 @@ class MusicPlayerRepository @Inject constructor(
 ) {
     private var _mediaPlayer: MediaPlayer? = null
     private val _handler = Handler(Looper.getMainLooper())
-    //private var _songChangeCallback: ((AudioFileMetaData?) -> Unit)? = null
     private var _onCompletionCallback: (() -> Unit)? = null
     private var _onProgressCallback: ((Int) -> Unit)? = null
     private var _currentSong: AudioFileMetaData? = null
@@ -66,7 +65,7 @@ class MusicPlayerRepository @Inject constructor(
         getMediaPlayerInstance()?.release()
         _mediaPlayer = null
         _currentSong = null
-        //_songChangeCallback?.let { it(null) }
+        songQueueUseCases.clearQueue()
     }
 
     fun play(context: Context) {
@@ -92,17 +91,13 @@ class MusicPlayerRepository @Inject constructor(
                 Log.i(TAG, "Play from queue")
                 _currentSong = songQueueUseCases.getQueueItem()
                 Log.i(TAG, "New song to play: ${_currentSong?.artist} - ${_currentSong?.title}")
-                _currentSong?.songUri?.let { songNotNull ->
-                    if (playSong(context, songNotNull)) {
-                        //_songChangeCallback?.let { it(_currentSong) }
-                    }
+                _currentSong?.songUri?.let {
+                    playSong(context, it)
                 }
             } else if (_currentSong != null) {
                 Log.i(TAG, "Queue is empty, play current song")
-                _currentSong?.songUri?.let { songNotNull ->
-                    if (playSong(context, songNotNull)) {
-                        //_songChangeCallback?.let { it(_currentSong) }
-                    }
+                _currentSong?.songUri?.let {
+                    playSong(context, it)
                 }
             } else {
                 Log.w(TAG, "Queue is empty!")
@@ -116,7 +111,6 @@ class MusicPlayerRepository @Inject constructor(
     private fun playSong(context: Context, songUri: Uri) : Boolean {
         var success = false
         try {
-            //Log.i(TAG, "Play new song ${songUri}")
             getMediaPlayerInstance()?.apply {
                 reset()
                 setAudioAttributes(
@@ -129,7 +123,7 @@ class MusicPlayerRepository @Inject constructor(
                 prepare()
                 start()
             } ?: Log.e(TAG, "Failed to start player!")
-            _handler.postDelayed(UpdateSongTime,100)
+            _handler.postDelayed(updateSongTime,100)
             success = true
         } catch (e: Exception) {
             e.printStackTrace();
@@ -137,7 +131,7 @@ class MusicPlayerRepository @Inject constructor(
         return success
     }
 
-    private val UpdateSongTime: Runnable = object : Runnable {
+    private val updateSongTime: Runnable = object : Runnable {
         override fun run() {
             if (_initDone) {
                 val currentPosition = getMediaPlayerInstance()?.currentPosition?.toFloat() ?: 0F
@@ -172,16 +166,12 @@ class MusicPlayerRepository @Inject constructor(
             if (isPlaying && songQueueUseCases.queueSize() > 0) {
                 playSongFromQueue(context)
             } else {
-                // Remove one item from the queue,
-                // if the queue is empty report empty queue.
-                _initDone = false
-//                _currentSong = songQueueUseCases.getQueueItem()
-//                if (_currentSong == null && songQueueUseCases.queueSize() == 0) {
-//                    Log.w(TAG, "Queue is empty!")
-//                    _songChangeCallback?.let { it(null) }
-//                } else {
-//                    _songChangeCallback?.let { it(_currentSong) }
-//                }
+                // Queue is empty clear player resources
+                clearMediaPlayer()
+
+                // Update the UI
+                _onProgressCallback?.let { it(0) }
+                _onCompletionCallback?.let { it() }
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -190,7 +180,7 @@ class MusicPlayerRepository @Inject constructor(
 
     fun stop() {
         try {
-            _handler.removeCallbacks(UpdateSongTime)
+            _handler.removeCallbacks(updateSongTime)
             getMediaPlayerInstance()?.stop()
             clearMediaPlayer()
         } catch (e: Exception) {
@@ -210,7 +200,7 @@ class MusicPlayerRepository @Inject constructor(
       return if (_currentSong != null) {
           _currentSong
       } else {
-        songQueueUseCases.peekQueue()
+          songQueueUseCases.peekQueue()
       }
     }
 }

@@ -25,4 +25,7 @@
 
     <!-- Artists list -->
     <string name="artist_list_item_number_of_albums">Albums:</string>
+
+    <!-- Bottom sheet -->
+    <string name="bottomsheet_message_empty_queue">Queue is empty!</string>
 </resources>

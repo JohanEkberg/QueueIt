@@ -11,16 +11,21 @@ import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import se.johan.queueit.ui.handleUiEvent
 import se.johan.queueit.ui.navigation.QueueItNavGraph
 import se.johan.queueit.ui.navigation.resolveScreen
 import se.johan.queueit.ui.screens.AppScreens
@@ -39,6 +44,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             QueueItTheme {
 
+                val snackbarHostState = remember { SnackbarHostState() }
+
                 // Instantiate the BottomSheetViewModel i.e. bottom player.
                 val bottomSheetViewModel: BottomSheetViewModel = hiltViewModel()
                 val sheetContent = bottomSheetViewModel.content
@@ -50,11 +57,21 @@ class MainActivity : ComponentActivity() {
                     )
                 )
 
+                // Handle the bottom sheet state
                 LaunchedEffect(sheetContent) {
                     if (sheetContent != null) {
                         sheetState.bottomSheetState.expand()
                     } else {
                         sheetState.bottomSheetState.hide()
+                    }
+                }
+
+                // Handle the UI events
+                LaunchedEffect(Unit) {
+                    bottomSheetViewModel.uiEvent.collect { event ->
+                        handleUiEvent(event) {
+                            snackbarHostState.showSnackbar(it)
+                        }
                     }
                 }
 
@@ -71,7 +88,8 @@ class MainActivity : ComponentActivity() {
                 Log.i(TAG, "Destination: ${currentRoute} ${currentScreen}")
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    // We want te be able to open the settings screen from the menu
+                    snackbarHost = { SnackbarHost(snackbarHostState) },
+                            // We want te be able to open the settings screen from the menu
                     topBar = {
                         when (currentScreen) {
                             AppScreens.SearchScreenIdentifier -> SearchToolbar(navController, sharedSearchViewModel)

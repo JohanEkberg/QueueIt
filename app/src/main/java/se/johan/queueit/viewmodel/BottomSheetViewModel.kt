@@ -11,10 +11,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.launch
+import se.johan.queueit.R
 import se.johan.queueit.TAG
 import se.johan.queueit.audio.player.MusicPlayerUseCases
 import se.johan.queueit.mediastore.util.getArtWork
+import se.johan.queueit.ui.UiEvent
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,6 +48,9 @@ class BottomSheetViewModel @Inject constructor(
     var playerHeight: Dp = 0.dp
         private set
 
+    private val _uiEvent = MutableSharedFlow<UiEvent>()
+    val uiEvent = _uiEvent.asSharedFlow()
+
     init {
         musicPlayer.setOnProgress { progress ->
             updateProgress(progress)
@@ -62,8 +71,9 @@ class BottomSheetViewModel @Inject constructor(
                 title = song.title
             )
         } ?: run {
+            currentSong = null
             onStop()
-            hide()
+            hide(context)
         }
     }
 
@@ -94,10 +104,15 @@ class BottomSheetViewModel @Inject constructor(
         isVisible = true
     }
 
-    fun hide() {
+    private fun hide(context: Context) {
         this.content = null
         this.currentSong = null
         isVisible = false
+        this.isPlaying = false
+        viewModelScope.launch {
+            val message = context.getString(R.string.bottomsheet_message_empty_queue)
+            _uiEvent.emit(UiEvent.ShowSnackbar(message))
+        }
     }
 
     fun onPlay(context: Context) {
