@@ -5,7 +5,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import se.johan.queueit.audio.data.AudioFileMetaData
 import se.johan.queueit.audio.player.GetCurrentSong
 import se.johan.queueit.audio.player.MusicPlayerRepository
 import se.johan.queueit.audio.player.MusicPlayerUseCases
@@ -50,8 +49,6 @@ import se.johan.queueit.model.usecases.GetPagedAlbumWithSong
 import se.johan.queueit.model.usecases.GetPagedArtistWithSongs
 import se.johan.queueit.model.usecases.GetSongByName
 import se.johan.queueit.model.usecases.GetSongs
-import java.util.LinkedList
-import java.util.Queue
 import javax.inject.Singleton
 
 @Module
@@ -117,23 +114,6 @@ object AppModule {
             observeQueue = ObserveQueue(songQueueRepository)
         )
     }
-
-//    @Provides
-//    @Singleton
-//    fun provideSongQueue(): SongQueueUseCases {
-//        val queue: Queue<AudioFileMetaData> = LinkedList()
-//        return SongQueueUseCases(
-//            addQueueItem = AddQueueItem(queue),
-//            clearQueue = ClearQueue(queue),
-//            getQueueItem = GetQueueItem(queue),
-//            getQueueItems = GetQueueItems(queue),
-//            isEmpty = IsEmpty(queue),
-//            isEqual = IsEqual(queue),
-//            queueSize = QueueSize(queue),
-//            removeQueueItem = RemoveQueueItem(queue),
-//            peekQueue = PeekQueue(queue)
-//        )
-//    }
 
     @Provides
     @Singleton
