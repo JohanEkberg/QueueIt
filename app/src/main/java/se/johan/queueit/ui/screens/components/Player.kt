@@ -12,7 +12,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,12 +32,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModelStoreOwner
+import androidx.navigation.NavController
 import se.johan.queueit.R
+import se.johan.queueit.ui.screens.AppScreens
 import se.johan.queueit.ui.theme.blue50
 import se.johan.queueit.viewmodel.BottomSheetViewModel
 
 @Composable
 fun Player(
+    navController: NavController,
     bottomSheetViewModel: BottomSheetViewModel = hiltViewModel(LocalContext.current as ViewModelStoreOwner)
 ) {
     val context = LocalContext.current
@@ -107,7 +109,11 @@ fun Player(
 
                 // Lyrics Button
                 IconButton(
-                    onClick = {bottomSheetViewModel.onPlay(context)},
+                    onClick = {
+                        navController.navigate(
+                            AppScreens.SongOverviewScreenIdentifier(artist = song.artist, title = song.title)
+                        )
+                    },
                     modifier = Modifier.size(48.dp)
                 ) {
                     Icon(

@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -34,6 +35,7 @@ import se.johan.queueit.ui.screens.components.TopToolbar
 import se.johan.queueit.ui.theme.QueueItTheme
 import se.johan.queueit.viewmodel.BottomSheetViewModel
 import se.johan.queueit.viewmodel.SharedSearchViewModel
+import se.johan.queueit.viewmodel.dynamicBottomPadding
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -43,7 +45,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             QueueItTheme {
-
                 val snackbarHostState = remember { SnackbarHostState() }
 
                 // Instantiate the BottomSheetViewModel i.e. bottom player.
@@ -66,7 +67,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-                // Handle the UI events
+                // Handle the global UI events
                 LaunchedEffect(Unit) {
                     bottomSheetViewModel.uiEvent.collect { event ->
                         handleUiEvent(event) {
@@ -88,7 +89,10 @@ class MainActivity : ComponentActivity() {
                 Log.i(TAG, "Destination: ${currentRoute} ${currentScreen}")
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    snackbarHost = { SnackbarHost(snackbarHostState) },
+                    snackbarHost = { SnackbarHost(
+                        snackbarHostState,
+                        modifier = Modifier.padding(bottom = bottomSheetViewModel.dynamicBottomPadding())
+                    ) },
                             // We want te be able to open the settings screen from the menu
                     topBar = {
                         when (currentScreen) {

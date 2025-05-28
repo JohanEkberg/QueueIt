@@ -59,7 +59,7 @@ fun SearchScreen(
 
             if (!bottomSheetViewModel.isVisible) {
                 bottomSheetViewModel.show(context = context) {
-                    Player()
+                    Player(navController)
                 }
             }
         }

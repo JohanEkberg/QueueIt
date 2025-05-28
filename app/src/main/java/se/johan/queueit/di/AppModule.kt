@@ -5,6 +5,15 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import se.johan.queueit.apiservices.ApiEndPoints
+import se.johan.queueit.apiservices.ApiEndPoints.LYRICS_BASE_URL
+import se.johan.queueit.apiservices.ApiServicesUseCases
+import se.johan.queueit.apiservices.GetLyric
+import se.johan.queueit.apiservices.LyricApiService
+import se.johan.queueit.apiservices.LyricsApi
+import se.johan.queueit.apiservices.LyricsRepository
 import se.johan.queueit.audio.player.GetCurrentSong
 import se.johan.queueit.audio.player.MusicPlayerRepository
 import se.johan.queueit.audio.player.MusicPlayerUseCases
@@ -132,6 +141,39 @@ object AppModule {
             setOnProgress = SetOnProgress(repository),
             setOnCompletion = SetOnCompletion(repository),
             getCurrentSong = GetCurrentSong(repository)
+        )
+    }
+
+    @LyricsApi
+    @Provides
+    fun provideLyricsBaseUrl() = LYRICS_BASE_URL
+
+    @LyricsApi
+    @Provides
+    @Singleton
+    fun provideRetrofit(@LyricsApi baseUrl: String): Retrofit =
+        Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+    @LyricsApi
+    @Provides
+    @Singleton
+    fun provideLyricsApi(@LyricsApi retrofit: Retrofit): LyricApiService =
+        retrofit.create(LyricApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideLyricsRepository(@LyricsApi lyricApiService: LyricApiService): LyricsRepository {
+        return LyricsRepository(lyricApiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideApiServicesUseCases(repository: LyricsRepository): ApiServicesUseCases {
+        return ApiServicesUseCases(
+            getLyric = GetLyric(repository)
         )
     }
 }

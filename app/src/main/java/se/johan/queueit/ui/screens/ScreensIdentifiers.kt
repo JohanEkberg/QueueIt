@@ -30,4 +30,8 @@ sealed class AppScreens(val route: String) {
     @Serializable
     data object SearchScreenIdentifier
         : AppScreens("se.johan.queueit.ui.screens.AppScreens.SearchScreenIdentifier")
+
+    @Serializable
+    data class SongOverviewScreenIdentifier(val artist: String, val title: String)
+        : AppScreens("se.johan.queueit.ui.screens.AppScreens.SongOverviewScreenIdentifier")
 }

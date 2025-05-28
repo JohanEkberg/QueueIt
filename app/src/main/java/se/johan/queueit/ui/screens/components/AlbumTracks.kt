@@ -11,12 +11,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import se.johan.queueit.mediastore.util.getFormattedDurationTime
 import se.johan.queueit.model.database.SongWithArtist
 import se.johan.queueit.viewmodel.BottomSheetViewModel
 
 @Composable
 fun AlbumTracks(
+    navController: NavController,
     tracks: List<SongWithArtist>,
     onTrackClick: (SongWithArtist) -> Unit,
     bottomSheetViewModel: BottomSheetViewModel
@@ -41,7 +43,7 @@ fun AlbumTracks(
                         // Show player
                         if (!bottomSheetViewModel.isVisible) {
                             bottomSheetViewModel.show(context = context) {
-                                Player()
+                                Player(navController)
                             }
                         }
                 }

@@ -161,7 +161,7 @@ fun ExpandableAlbumList(
                                     // Show player
                                     if (!bottomSheetViewModel.isVisible) {
                                         bottomSheetViewModel.show(context = context) {
-                                            Player()
+                                            Player(navController)
                                         }
                                     }
                                 }

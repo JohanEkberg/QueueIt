@@ -58,6 +58,6 @@ fun AlbumScreen(
             }
     ) {
         AlbumHeader(album, albumArtWork)
-        AlbumTracks(album.songList, albumViewModel.addTrackToQueue, bottomSheetViewModel)
+        AlbumTracks(navController, album.songList, albumViewModel.addTrackToQueue, bottomSheetViewModel)
     }
 }

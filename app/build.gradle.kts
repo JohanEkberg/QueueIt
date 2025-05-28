@@ -71,6 +71,8 @@ dependencies {
     implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.paging.compose)
+    implementation(libs.com.squareup.retrofit2)
+    implementation(libs.com.squareup.retrofit2.gson.converter)
     kapt(libs.hilt.android.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.hilt.android.test)

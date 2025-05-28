@@ -13,6 +13,7 @@ import se.johan.queueit.ui.screens.ArtistScreen
 import se.johan.queueit.ui.screens.HomeScreen
 import se.johan.queueit.ui.screens.SearchScreen
 import se.johan.queueit.ui.screens.SettingsScreen
+import se.johan.queueit.ui.screens.SongOverviewScreen
 import se.johan.queueit.ui.screens.SplashScreen
 import se.johan.queueit.viewmodel.SharedSearchViewModel
 
@@ -51,6 +52,11 @@ fun QueueItNavGraph(
         // Map search screen identifier with the search screen
         composable<AppScreens.SearchScreenIdentifier> {
             SearchScreen(navController, sharedSearchViewModel)
+        }
+
+        // Map song overview screen identifier with the song overview screen
+        composable<AppScreens.SongOverviewScreenIdentifier> {
+            SongOverviewScreen(navController)
         }
     }
 }

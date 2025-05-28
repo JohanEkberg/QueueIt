@@ -80,7 +80,7 @@ class MusicPlayerRepository @Inject constructor(
                 getMediaPlayerInstance()?.start()
             }
         } catch (e: Exception) {
-            e.printStackTrace();
+            e.printStackTrace()
         }
     }
 
