@@ -14,5 +14,10 @@ interface LyricApiService {
 }
 
 data class LyricsResponse(
-    @SerializedName("lyrics") val lyrics: String
+    @SerializedName("lyrics") val lyrics: String?
 )
+
+sealed class LyricsApiResult {
+    data class Success(val lyric: String) : LyricsApiResult()
+    data class Error(val errorCode: Int, val message: String) : LyricsApiResult()
+}

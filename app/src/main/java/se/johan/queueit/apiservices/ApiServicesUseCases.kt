@@ -2,6 +2,7 @@ package se.johan.queueit.apiservices
 
 data class ApiServicesUseCases(
     val getLyric: GetLyric,
+    val getArtistOverview: GetArtistOverview,
 )
 
 class ApiServicesException(
@@ -10,5 +11,6 @@ class ApiServicesException(
 ) : Exception(message)
 
 enum class ApiServicesErrorCode(value: Int) {
-    LYRIC_NOT_FOUND(10)
+    LYRIC_NOT_FOUND(10),
+    ARTIST_NOT_FOUND(20)
 }

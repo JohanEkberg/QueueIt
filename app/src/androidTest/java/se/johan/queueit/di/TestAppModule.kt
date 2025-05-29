@@ -8,12 +8,17 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import se.johan.queueit.apiservices.ApiEndPoints.ARTIST_OVERVIEW_BASE_URL
 import se.johan.queueit.apiservices.ApiEndPoints.LYRICS_BASE_URL
 import se.johan.queueit.apiservices.ApiServicesUseCases
+import se.johan.queueit.apiservices.ArtistOverviewApi
+import se.johan.queueit.apiservices.GetArtistOverview
 import se.johan.queueit.apiservices.GetLyric
 import se.johan.queueit.apiservices.LyricApiService
 import se.johan.queueit.apiservices.LyricsApi
 import se.johan.queueit.apiservices.LyricsRepository
+import se.johan.queueit.apiservices.OverviewApiService
+import se.johan.queueit.apiservices.OverviewRepository
 import se.johan.queueit.audio.data.AudioFileMetaData
 import se.johan.queueit.audio.player.GetCurrentSong
 import se.johan.queueit.audio.player.MusicPlayerRepository
@@ -176,11 +181,40 @@ object TestAppModule {
         return LyricsRepository(lyricApiService)
     }
 
+    @ArtistOverviewApi
+    @Provides
+    fun provideArtistOverviewBaseUrl() = ARTIST_OVERVIEW_BASE_URL
+
+    @ArtistOverviewApi
     @Provides
     @Singleton
-    fun provideApiServicesUseCases(repository: LyricsRepository): ApiServicesUseCases {
+    fun provideArtistOverviewRetrofit(@ArtistOverviewApi baseUrl: String): Retrofit =
+        Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+    @ArtistOverviewApi
+    @Provides
+    @Singleton
+    fun provideArtistOverviewApi(@ArtistOverviewApi retrofit: Retrofit): OverviewApiService =
+        retrofit.create(OverviewApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideArtistOverviewRepository(@ArtistOverviewApi overviewApiService: OverviewApiService): OverviewRepository {
+        return OverviewRepository(overviewApiService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideApiServicesUseCases(
+        lyricsRepository: LyricsRepository,
+        overviewRepository: OverviewRepository
+    ): ApiServicesUseCases {
         return ApiServicesUseCases(
-            getLyric = GetLyric(repository)
+            getLyric = GetLyric(lyricsRepository),
+            getArtistOverview = GetArtistOverview(overviewRepository)
         )
     }
 }

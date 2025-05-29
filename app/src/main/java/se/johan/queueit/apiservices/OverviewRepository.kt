@@ -6,16 +6,15 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class LyricsRepository @Inject constructor(private val api: LyricApiService) {
+class OverviewRepository @Inject constructor(private val api: OverviewApiService) {
     private val gson = Gson()
-
-    suspend fun getLyric(artist: String, title: String): LyricsApiResult {
+    suspend fun getArtistOverview(artist: String): OverviewApiResult {
         return try {
-            val response = api.requestSongLyric(artist = artist, title = title)
-            if (response.lyrics != null) {
-                LyricsApiResult.Success(response.lyrics)
+            val response = api.requestArtistOverview(artist = artist)
+            if (response.artist != null) {
+                OverviewApiResult.Success(response.artist)
             } else {
-                LyricsApiResult.Error(-1, "Unknown error — lyric missing")
+                OverviewApiResult.Error(-1, "Unknown error — artist missing")
             }
         } catch (e: HttpException) {
             val errorBody = e.response()?.errorBody()?.string()
@@ -23,12 +22,12 @@ class LyricsRepository @Inject constructor(private val api: LyricApiService) {
                 gson.fromJson(errorBody, ErrorResponse::class.java)
             }.getOrNull()
 
-            LyricsApiResult.Error(
+            OverviewApiResult.Error(
                 errorCode = errorResponse?.errorCode ?: e.code(),
                 message = errorResponse?.message ?: "Unexpected error"
             )
         } catch (e: Exception) {
-            LyricsApiResult.Error(-2, e.message ?: "Unknown exception")
+            OverviewApiResult.Error(-2, e.message ?: "Unknown exception")
         }
     }
 }

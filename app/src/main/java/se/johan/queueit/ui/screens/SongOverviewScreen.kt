@@ -43,7 +43,7 @@ fun SongOverviewScreen(
     songOverviewViewModel: SongOverviewViewModel = hiltViewModel(),
     bottomSheetViewModel: BottomSheetViewModel = hiltViewModel(LocalContext.current as ViewModelStoreOwner)
 ) {
-//    val overview by songInformationViewModel.overview.collectAsState()
+    val artistOverview by songOverviewViewModel.artist.collectAsState()
     val lyric by songOverviewViewModel.lyric.collectAsState()
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -72,9 +72,9 @@ fun SongOverviewScreen(
             verticalArrangement = Arrangement.Top
         ) {
             item {
-                //if (overview.isNotEmpty()) {
+                if (artistOverview.name.isNotEmpty()) {
                     Text(
-                        "Overview",
+                        "Artist information",
                         color = Color.Black,
                         style = MaterialTheme.typography.headlineSmall,
                         modifier = Modifier
@@ -82,17 +82,26 @@ fun SongOverviewScreen(
                             .padding(start = 4.dp, end = 4.dp),
                         textAlign = TextAlign.Center
                     )
-                //}
+                }
             }
             item {
                 Text(
-                    text = "overview" ?: "",
+                    text = artistOverview.name,
                     color = Color.Black,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.widthIn(max = 250.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp),
+                    textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = artistOverview.bio.summary,
+                    color = Color.Black,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp),
+                    textAlign = TextAlign.Center
+                )
             }
             item {
                 if (lyric.isNotEmpty()) {

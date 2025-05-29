@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -7,6 +9,15 @@ plugins {
     alias(libs.plugins.devtools.ksp)
     kotlin("kapt")
 }
+
+// Enable build config
+android.buildFeatures.buildConfig = true
+
+// Get the Last.fm  API key from the local.properties
+val localProperties = Properties().apply {
+    load(rootProject.file("local.properties").inputStream())
+}
+val apiKey = localProperties.getProperty("lastfm_api_key") ?: ""
 
 android {
     namespace = "se.johan.queueit"
@@ -24,6 +35,8 @@ android {
 
         // For integration test (that uses dagger/hilt)
         testInstrumentationRunner = "se.johan.queueit.HiltTestRunner"
+
+        buildConfigField("String", "LASTFM_API_KEY", "\"$apiKey\"")
     }
 
     buildTypes {
@@ -65,6 +78,7 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     implementation(libs.androidx.palette.ktx)
+    implementation(libs.androidx.multidex)
     ksp(libs.room.compiler)
     annotationProcessor(libs.room.compiler)
     implementation(libs.room.paging)

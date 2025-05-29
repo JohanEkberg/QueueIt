@@ -3,6 +3,7 @@ package se.johan.queueit.apiservices
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.util.Log
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.platform.app.InstrumentationRegistry
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -13,12 +14,14 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import se.johan.queueit.TAG
 import se.johan.queueit.di.AppModule
+import se.johan.queueit.ui.UiEvent
 import javax.inject.Inject
 
 @HiltAndroidTest
 @UninstallModules(AppModule::class)
-class GetLyricsTest {
+class GetArtistOverviewTest {
     @Inject
     lateinit var apiServices: ApiServicesUseCases
 
@@ -43,15 +46,15 @@ class GetLyricsTest {
     }
 
     @Test
-    fun get_lyric_successful() {
+    fun get_artist_overview_successful() {
         runBlocking {
             val result = try {
-                when (apiServices.getLyric(artist = "accept", title = "wrong is right")) {
-                    is LyricsApiResult.Success -> {
+                when (apiServices.getArtistOverview(artist = "accept")) {
+                    is OverviewApiResult.Success -> {
                         true
                     }
-                    is LyricsApiResult.Error -> {
-                       false
+                    is OverviewApiResult.Error -> {
+                        false
                     }
                 }
             } catch (e: Exception) {
@@ -62,18 +65,19 @@ class GetLyricsTest {
     }
 
     @Test
-    fun get_lyric_unsuccessful() {
+    fun get_artist_overview_unsuccessful() {
         runBlocking {
             val result = try {
-                when (apiServices.getLyric(artist = "", title = "")) {
-                    is LyricsApiResult.Success -> {
+                when (apiServices.getArtistOverview(artist = "")) {
+                    is OverviewApiResult.Success -> {
                         false
                     }
-                    is LyricsApiResult.Error -> {
-                        true
+                    is OverviewApiResult.Error -> {
+                       true
                     }
                 }
             } catch (e: Exception) {
+                Log.e("get_artist_overview_unsuccessful", "Exception: ${e.message}")
                 false
             }
             assertTrue(result)
