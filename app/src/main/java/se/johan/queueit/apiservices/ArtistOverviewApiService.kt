@@ -5,22 +5,22 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 import se.johan.queueit.BuildConfig
 
-interface OverviewApiService {
+interface ArtistOverviewApiService {
     @GET("2.0/")
     suspend fun requestArtistOverview(
         @Query(OverviewApiQueryParameters.METHOD_KEY) method: String = OverviewApiQueryParameters.METHOD_VALUE,
         @Query(OverviewApiQueryParameters.ARTIST_KEY) artist: String,
         @Query(OverviewApiQueryParameters.API_KEY) apiKey: String = BuildConfig.LASTFM_API_KEY,
         @Query(OverviewApiQueryParameters.FORMAT_KEY) format: String = OverviewApiQueryParameters.FORMAT_VALUE
-    ): OverviewResponse
+    ): ArtistOverviewResponse
 }
 
-sealed class OverviewApiResult {
-    data class Success(val artistInfo: ArtistInfo) : OverviewApiResult()
-    data class Error(val errorCode: Int, val message: String) : OverviewApiResult()
+sealed class ArtistOverviewApiResult {
+    data class Success(val artistInfo: ArtistInfo) : ArtistOverviewApiResult()
+    data class Error(val errorCode: Int, val message: String) : ArtistOverviewApiResult()
 }
 
-data class OverviewResponse(
+data class ArtistOverviewResponse(
     @SerializedName("artist") val artist: ArtistInfo?
 )
 

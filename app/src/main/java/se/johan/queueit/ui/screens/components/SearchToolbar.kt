@@ -21,7 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.navigation.NavController
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import se.johan.queueit.ui.screens.AppScreens
@@ -33,10 +35,16 @@ fun SearchToolbar(
     navController: NavController,
     searchViewModel: SharedSearchViewModel
 ) {
-    //val context = LocalContext.current
-
     var query by remember { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    // 🔄 Request focus and show keyboard after composition
+    LaunchedEffect(Unit) {
+        delay(300) // allows the UI to settle
+        focusRequester.requestFocus()
+        keyboardController?.show()
+    }
 
     TopAppBar(
         navigationIcon = {

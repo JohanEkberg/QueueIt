@@ -14,9 +14,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import se.johan.queueit.TAG
 import se.johan.queueit.di.AppModule
-import se.johan.queueit.ui.UiEvent
 import javax.inject.Inject
 
 @HiltAndroidTest
@@ -50,10 +48,10 @@ class GetArtistOverviewTest {
         runBlocking {
             val result = try {
                 when (apiServices.getArtistOverview(artist = "accept")) {
-                    is OverviewApiResult.Success -> {
+                    is ArtistOverviewApiResult.Success -> {
                         true
                     }
-                    is OverviewApiResult.Error -> {
+                    is ArtistOverviewApiResult.Error -> {
                         false
                     }
                 }
@@ -69,10 +67,10 @@ class GetArtistOverviewTest {
         runBlocking {
             val result = try {
                 when (apiServices.getArtistOverview(artist = "")) {
-                    is OverviewApiResult.Success -> {
+                    is ArtistOverviewApiResult.Success -> {
                         false
                     }
-                    is OverviewApiResult.Error -> {
+                    is ArtistOverviewApiResult.Error -> {
                        true
                     }
                 }

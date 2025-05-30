@@ -17,7 +17,7 @@ import se.johan.queueit.TAG
 import se.johan.queueit.apiservices.ApiServicesUseCases
 import se.johan.queueit.apiservices.ArtistInfo
 import se.johan.queueit.apiservices.LyricsApiResult
-import se.johan.queueit.apiservices.OverviewApiResult
+import se.johan.queueit.apiservices.ArtistOverviewApiResult
 import se.johan.queueit.ui.UiEvent
 import javax.inject.Inject
 
@@ -61,14 +61,12 @@ class SongOverviewViewModel @Inject constructor (
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 try {
-                    //_artist.value = apiServices.getArtistOverview(artist = artist).artist
-
                     when (val result = apiServices.getArtistOverview(artist = artist)) {
-                        is OverviewApiResult.Success -> {
+                        is ArtistOverviewApiResult.Success -> {
                             _artist.value = result.artistInfo
                             // show data
                         }
-                        is OverviewApiResult.Error -> {
+                        is ArtistOverviewApiResult.Error -> {
                             Log.w(TAG, "No artist was found, exception: ${result.message}, error: ${result.errorCode}")
                             _uiEvent.emit(UiEvent.ShowSnackbar(result.message))
                         }

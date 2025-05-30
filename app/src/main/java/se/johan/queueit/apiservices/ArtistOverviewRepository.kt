@@ -6,15 +6,15 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class OverviewRepository @Inject constructor(private val api: OverviewApiService) {
+class ArtistOverviewRepository @Inject constructor(private val api: ArtistOverviewApiService) {
     private val gson = Gson()
-    suspend fun getArtistOverview(artist: String): OverviewApiResult {
+    suspend fun getArtistOverview(artist: String): ArtistOverviewApiResult {
         return try {
             val response = api.requestArtistOverview(artist = artist)
             if (response.artist != null) {
-                OverviewApiResult.Success(response.artist)
+                ArtistOverviewApiResult.Success(response.artist)
             } else {
-                OverviewApiResult.Error(-1, "Unknown error — artist missing")
+                ArtistOverviewApiResult.Error(-1, "Unknown error — artist missing")
             }
         } catch (e: HttpException) {
             val errorBody = e.response()?.errorBody()?.string()
@@ -22,12 +22,12 @@ class OverviewRepository @Inject constructor(private val api: OverviewApiService
                 gson.fromJson(errorBody, ErrorResponse::class.java)
             }.getOrNull()
 
-            OverviewApiResult.Error(
+            ArtistOverviewApiResult.Error(
                 errorCode = errorResponse?.errorCode ?: e.code(),
                 message = errorResponse?.message ?: "Unexpected error"
             )
         } catch (e: Exception) {
-            OverviewApiResult.Error(-2, e.message ?: "Unknown exception")
+            ArtistOverviewApiResult.Error(-2, e.message ?: "Unknown exception")
         }
     }
 }

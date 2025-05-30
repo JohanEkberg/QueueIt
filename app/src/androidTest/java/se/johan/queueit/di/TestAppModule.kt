@@ -17,9 +17,8 @@ import se.johan.queueit.apiservices.GetLyric
 import se.johan.queueit.apiservices.LyricApiService
 import se.johan.queueit.apiservices.LyricsApi
 import se.johan.queueit.apiservices.LyricsRepository
-import se.johan.queueit.apiservices.OverviewApiService
-import se.johan.queueit.apiservices.OverviewRepository
-import se.johan.queueit.audio.data.AudioFileMetaData
+import se.johan.queueit.apiservices.ArtistOverviewApiService
+import se.johan.queueit.apiservices.ArtistOverviewRepository
 import se.johan.queueit.audio.player.GetCurrentSong
 import se.johan.queueit.audio.player.MusicPlayerRepository
 import se.johan.queueit.audio.player.MusicPlayerUseCases
@@ -64,8 +63,6 @@ import se.johan.queueit.model.usecases.GetPagedAlbumWithSong
 import se.johan.queueit.model.usecases.GetPagedArtistWithSongs
 import se.johan.queueit.model.usecases.GetSongByName
 import se.johan.queueit.model.usecases.GetSongs
-import java.util.LinkedList
-import java.util.Queue
 import javax.inject.Singleton
 
 @Module
@@ -197,20 +194,20 @@ object TestAppModule {
     @ArtistOverviewApi
     @Provides
     @Singleton
-    fun provideArtistOverviewApi(@ArtistOverviewApi retrofit: Retrofit): OverviewApiService =
-        retrofit.create(OverviewApiService::class.java)
+    fun provideArtistOverviewApi(@ArtistOverviewApi retrofit: Retrofit): ArtistOverviewApiService =
+        retrofit.create(ArtistOverviewApiService::class.java)
 
     @Provides
     @Singleton
-    fun provideArtistOverviewRepository(@ArtistOverviewApi overviewApiService: OverviewApiService): OverviewRepository {
-        return OverviewRepository(overviewApiService)
+    fun provideArtistOverviewRepository(@ArtistOverviewApi overviewApiService: ArtistOverviewApiService): ArtistOverviewRepository {
+        return ArtistOverviewRepository(overviewApiService)
     }
 
     @Provides
     @Singleton
     fun provideApiServicesUseCases(
         lyricsRepository: LyricsRepository,
-        overviewRepository: OverviewRepository
+        overviewRepository: ArtistOverviewRepository
     ): ApiServicesUseCases {
         return ApiServicesUseCases(
             getLyric = GetLyric(lyricsRepository),
