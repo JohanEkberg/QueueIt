@@ -6,22 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import se.johan.queueit.TAG
 import se.johan.queueit.mediastore.ScanHandler
-import se.johan.queueit.mediastore.usecases.AudioScannerUseCases
-import se.johan.queueit.mediastore.usecases.StartScan
-import se.johan.queueit.model.database.AudioDatabase
-import se.johan.queueit.model.usecases.AddAlbum
-import se.johan.queueit.model.usecases.AddArtist
-import se.johan.queueit.model.usecases.AddSong
 import se.johan.queueit.model.usecases.AudioDataUseCases
-import se.johan.queueit.model.usecases.DatabaseExist
-import se.johan.queueit.model.usecases.GetSongs
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,19 +20,6 @@ class SplashViewModel @Inject constructor (
     private val audioDataUseCases: AudioDataUseCases,
     private val scanHandler: ScanHandler
 ) : ViewModel() {
-
-//    private val _requireScan: MutableState<Boolean?> = mutableStateOf(null)
-//    var requireScan: State<Boolean?> = _requireScan
-
-//    private val _artistDetected: MutableStateFlow<String> = MutableStateFlow("")
-//    var artistDetected: StateFlow<String> = _artistDetected
-//
-//    private val _successfulStartup: MutableStateFlow<Boolean?> = MutableStateFlow(null)
-//    var successfulStartup: StateFlow<Boolean?> = _successfulStartup
-
-//    private val _isPermissionGranted: MutableState<Boolean> = mutableStateOf(false)
-//    val isPermissionGranted: State<Boolean> = _isPermissionGranted
-
     val artistsDetected: StateFlow<List<String>> = scanHandler.artistsDetected
     var successfulScan: StateFlow<Boolean?> = scanHandler.successfulScan
 
